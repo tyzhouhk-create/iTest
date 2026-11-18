@@ -300,75 +300,12 @@
                     </svg>
                     <span class="hidden sm:inline">导出</span>
                 </button>
-                <!-- Apple / Google 登录状态按钮 -->
-                <button id="btn-auth-entry" onclick="openAuthModal()" class="btn-black h-9 px-3 text-xs flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                    <span id="auth-entry-label">登录</span>
-                </button>
             </nav>
         </div>
     </header>
 
     <!-- 轻量黑底白字 Toast 提示 -->
     <div id="toast-box" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2"></div>
-
-    <!-- Apple / Google 账号登录验证弹窗 -->
-    <div id="auth-dialog" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 border-2 border-black shadow-2xl apple-fade space-y-5">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-[7px] bg-black text-white text-xs">iT</span>
-                    <h3 id="auth-modal-title" class="text-base text-black">账号登录</h3>
-                </div>
-                <button onclick="closeAuthModal()" class="btn-white w-7 h-7 !rounded-[8px] flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-
-            <!-- 未登录状态视图 -->
-            <div id="auth-logged-out-box" class="space-y-3">
-                <p class="text-xs text-black/70 leading-relaxed">
-                    登录后即可上传贡献题库，且仅您本人可撤销自己上传的题库，他人无法篡改。
-                </p>
-
-                <!-- 通过 Apple 登录（标准黑底白字 Apple 按钮） -->
-                <button onclick="signInWithProvider('apple')" class="btn-black w-full h-11 px-4 text-xs sm:text-sm flex items-center justify-center gap-2.5">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                    </svg>
-                    <span>通过 Apple 账号登录</span>
-                </button>
-
-                <!-- 通过 Google 登录（标准白底黑字 Google 按钮） -->
-                <button onclick="signInWithProvider('google')" class="btn-white w-full h-11 px-4 text-xs sm:text-sm flex items-center justify-center gap-2.5">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24">
-                        <path fill="#000000" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27 3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10 5.35 0 9.25-3.67 9.25-9.09 0-1.15-.15-1.81-.15-1.81z"/>
-                    </svg>
-                    <span>通过 Google 账号登录</span>
-                </button>
-
-                <div class="pt-2 border-t border-black/15">
-                    <label class="text-[11px] text-black/60 block mb-1">自定义显示昵称（选填）</label>
-                    <input id="auth-nickname-input" type="text" placeholder="留空则自动生成账号标识" class="w-full h-9 px-3 rounded-[9px] bg-[#F5F5F7] border border-black/30 text-xs text-black outline-none focus:border-black">
-                </div>
-            </div>
-
-            <!-- 已登录状态视图 -->
-            <div id="auth-logged-in-box" class="hidden space-y-4">
-                <div class="p-4 rounded-xl bg-[#F5F5F7] border-2 border-black space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <span id="auth-user-provider-tag" class="px-2 py-0.5 rounded-[6px] bg-black text-white text-[10px]">Apple ID</span>
-                        <span id="auth-user-id-short" class="text-[10px] text-black/50">ID: ---</span>
-                    </div>
-                    <p id="auth-user-name" class="text-sm text-black pt-1">已登录用户</p>
-                    <p class="text-[11px] text-black/60">您上传的题库已自动绑定该账号，仅您本人可撤销。</p>
-                </div>
-                <button onclick="signOutUser()" class="btn-white w-full h-10 text-xs">退出当前账号</button>
-            </div>
-        </div>
-    </div>
 
     <!-- iTest 导出独立网页与直开链接弹窗 -->
     <div id="export-dialog" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/45 p-4">
@@ -565,22 +502,10 @@
 
         <!-- ==================== 2. 题库导入与管理视图 ==================== -->
         <section id="view-bank" class="hidden apple-fade max-w-3xl mx-auto space-y-5">
-            <!-- 未登录保护提示条 -->
-            <div id="bank-auth-banner" class="bg-black text-white rounded-2xl p-4 sm:p-5 border-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="space-y-0.5">
-                    <p class="text-xs sm:text-sm">需登录后方可上传题库</p>
-                    <p class="text-[11px] text-white/75">支持 Apple / Google 登录，上传后仅本人可撤销自己的题库</p>
-                </div>
-                <button onclick="openAuthModal()" class="btn-white h-9 px-4 text-xs shrink-0">立即登录</button>
-            </div>
-
-            <!-- 上传与智能解析卡片 -->
+            <!-- 上传与智能解析卡片（免登录，即开即用） -->
             <div id="bank-upload-card" class="bg-[#F5F5F7] rounded-2xl p-5 sm:p-6 border-2 border-black space-y-4">
                 <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2">
-                        <h2 class="text-base text-black">导入题库</h2>
-                        <span id="upload-owner-badge" class="hidden px-2 py-0.5 rounded-[6px] bg-black text-white text-[10px]">上传者: --</span>
-                    </div>
+                    <h2 class="text-base text-black">导入题库</h2>
                     <div class="flex items-center gap-2">
                         <button onclick="fillDemoText()" class="btn-white h-8 px-3 text-xs">示例</button>
                         <button onclick="restoreDemoBank()" class="btn-white h-8 px-3 text-xs">重置</button>
@@ -729,11 +654,9 @@
          */
         const KEY_BANK = 'apple_quiz_bank_v2';
         const KEY_WRONG = 'apple_quiz_wrong_v2';
-        const KEY_USER = 'apple_quiz_user_v1';
 
         const state = {
             view: 'train',
-            user: null,           // { id, name, provider: 'apple'|'google', accessToken? }
             bank: [],
             wrongIds: new Set(),
             trainMode: 'all',     // 'all' | 'wrong'
@@ -748,174 +671,18 @@
             }
         };
 
-        // 题库分类与归属权工具函数
+        // 题库分类工具函数
         function getDeckMeta(q) {
             return {
                 company: (q.company || '通用技术').trim(),
                 role: (q.role || '综合研发').trim(),
-                deckName: (q.deckName || '默认精选示例').trim(),
-                ownerId: q.ownerId || 'system_builtin',
-                ownerName: q.ownerName || '官方示例',
-                ownerProvider: q.ownerProvider || 'system'
+                deckName: (q.deckName || '默认精选示例').trim()
             };
         }
 
         function getDeckKey(q) {
             const m = getDeckMeta(q);
-            return `${m.company}||${m.role}||${m.deckName}||${m.ownerId}`;
-        }
-
-        function isQuestionOwner(q) {
-            if (!state.user || !state.user.id) return false;
-            return Boolean(q.ownerId && q.ownerId === state.user.id);
-        }
-
-        /**
-         * ============================================================================
-         * Apple / Google 账号登录验证模块
-         * ============================================================================
-         */
-        function loadUserSession() {
-            try {
-                const raw = localStorage.getItem(KEY_USER);
-                if (raw) {
-                    const u = JSON.parse(raw);
-                    if (u && u.id) state.user = u;
-                }
-            } catch (e) {}
-            // 检查是否从 Supabase OAuth 回调返回（URL hash 中带 access_token）
-            handleOAuthRedirectCallback();
-            updateAuthUI();
-        }
-
-        async function handleOAuthRedirectCallback() {
-            if (!isCloudEnabled()) return;
-            const hash = window.location.hash;
-            if (hash && hash.includes('access_token=')) {
-                const params = new URLSearchParams(hash.substring(1));
-                const accessToken = params.get('access_token');
-                if (accessToken) {
-                    try {
-                        const res = await fetch(`${SUPABASE_CONFIG.url.replace(/\/$/, '')}/auth/v1/user`, {
-                            headers: {
-                                'apikey': SUPABASE_CONFIG.anonKey,
-                                'Authorization': `Bearer ${accessToken}`
-                            }
-                        });
-                        if (res.ok) {
-                            const u = await res.json();
-                            const provider = u.app_metadata?.provider || 'apple';
-                            const displayName = u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || `${provider === 'apple' ? 'Apple' : 'Google'}用户`;
-                            state.user = {
-                                id: u.id,
-                                name: displayName,
-                                provider,
-                                accessToken
-                            };
-                            localStorage.setItem(KEY_USER, JSON.stringify(state.user));
-                            window.history.replaceState(null, '', window.location.pathname + window.location.search);
-                            updateAuthUI();
-                            toast(`欢迎回来，${displayName}`);
-                        }
-                    } catch (e) {}
-                }
-            }
-        }
-
-        function updateAuthUI() {
-            const label = document.getElementById('auth-entry-label');
-            const btn = document.getElementById('btn-auth-entry');
-            const loggedOutBox = document.getElementById('auth-logged-out-box');
-            const loggedInBox = document.getElementById('auth-logged-in-box');
-            const banner = document.getElementById('bank-auth-banner');
-            const ownerBadge = document.getElementById('upload-owner-badge');
-
-            if (state.user) {
-                const pLabel = state.user.provider === 'apple' ? 'Apple' : 'Google';
-                if (label) label.textContent = state.user.name.slice(0, 8);
-                if (btn) btn.className = 'btn-white h-9 px-3 text-xs flex items-center gap-1.5';
-                if (loggedOutBox) loggedOutBox.classList.add('hidden');
-                if (loggedInBox) loggedInBox.classList.remove('hidden');
-                const pTag = document.getElementById('auth-user-provider-tag');
-                const idTag = document.getElementById('auth-user-id-short');
-                const nameTag = document.getElementById('auth-user-name');
-                if (pTag) pTag.textContent = `${pLabel} 账号已认证`;
-                if (idTag) idTag.textContent = `UID: ${state.user.id.slice(0, 12)}`;
-                if (nameTag) nameTag.textContent = state.user.name;
-
-                if (banner) banner.classList.add('hidden');
-                if (ownerBadge) {
-                    ownerBadge.classList.remove('hidden');
-                    ownerBadge.textContent = `当前上传者: ${state.user.name} (${pLabel})`;
-                }
-            } else {
-                if (label) label.textContent = '登录';
-                if (btn) btn.className = 'btn-black h-9 px-3 text-xs flex items-center gap-1.5';
-                if (loggedOutBox) loggedOutBox.classList.remove('hidden');
-                if (loggedInBox) loggedInBox.classList.add('hidden');
-
-                if (banner) banner.classList.remove('hidden');
-                if (ownerBadge) ownerBadge.classList.add('hidden');
-            }
-
-            if (state.view === 'bank') renderBankList();
-        }
-
-        function openAuthModal() {
-            triggerHaptic('light');
-            updateAuthUI();
-            const dlg = document.getElementById('auth-dialog');
-            if (dlg) {
-                dlg.classList.remove('hidden');
-                dlg.classList.add('flex');
-            }
-        }
-
-        function closeAuthModal() {
-            triggerHaptic('light');
-            const dlg = document.getElementById('auth-dialog');
-            if (dlg) {
-                dlg.classList.add('hidden');
-                dlg.classList.remove('flex');
-            }
-        }
-
-        function signInWithProvider(provider) {
-            triggerHaptic('success');
-            // 若已配置 Supabase 云端，直接触发标准 Apple / Google OAuth 2.0 授权跳转
-            if (isCloudEnabled()) {
-                const redirectTo = encodeURIComponent(window.location.origin + window.location.pathname);
-                window.location.href = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/auth/v1/authorize?provider=${provider}&redirect_to=${redirectTo}`;
-                return;
-            }
-
-            // 本地与独立导出环境：创建可持久化的设备专属 Apple / Google 身份凭证
-            const customNick = (document.getElementById('auth-nickname-input')?.value || '').trim();
-            const deviceSeedKey = `itest_device_uid_${provider}`;
-            let uid = localStorage.getItem(deviceSeedKey);
-            if (!uid) {
-                uid = `${provider}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-                localStorage.setItem(deviceSeedKey, uid);
-            }
-            const defaultName = provider === 'apple' ? `Apple用户_${uid.slice(-4).toUpperCase()}` : `Google用户_${uid.slice(-4).toUpperCase()}`;
-            state.user = {
-                id: uid,
-                name: customNick || defaultName,
-                provider
-            };
-            localStorage.setItem(KEY_USER, JSON.stringify(state.user));
-            updateAuthUI();
-            closeAuthModal();
-            toast(`已通过 ${provider === 'apple' ? 'Apple' : 'Google'} 账号登录`);
-        }
-
-        function signOutUser() {
-            triggerHaptic('light');
-            state.user = null;
-            localStorage.removeItem(KEY_USER);
-            updateAuthUI();
-            closeAuthModal();
-            toast('已退出登录');
+            return `${m.company}||${m.role}||${m.deckName}`;
         }
 
         function quickFillRole(roleName) {
@@ -926,525 +693,202 @@
 
         /**
          * ============================================================================
-         * 内置 25 道全题型示例题库（单选 / 多选 / 判断 / 简答）
-         * ============================================================================
-         */
-        function getBuiltinBank() {
-            return [
-                {
-                    id: 'demo_1',
-                    type: 'single',
-                    stem: '在 HTTP 协议中，表示“请求成功”的标准状态码是？',
-                    options: [
-                        { key: 'A', text: '200 OK' },
-                        { key: 'B', text: '301 Moved Permanently' },
-                        { key: 'C', text: '404 Not Found' },
-                        { key: 'D', text: '500 Internal Server Error' }
-                    ],
-                    answer: 'A',
-                    explanation: '200 表示客户端请求已成功被服务器处理；301 为永久重定向，404 为未找到资源，500 为服务器内部错误。'
-                },
-                {
-                    id: 'demo_2',
-                    type: 'single',
-                    stem: '二分查找算法在有序数组（长度为 n）中的最坏时间复杂度是？',
-                    options: [
-                        { key: 'A', text: 'O(1)' },
-                        { key: 'B', text: 'O(log n)' },
-                        { key: 'C', text: 'O(n)' },
-                        { key: 'D', text: 'O(n log n)' }
-                    ],
-                    answer: 'B',
-                    explanation: '二分查找每次比较都将搜索区间减半，因此最坏时间复杂度为 O(log n)。'
-                },
-                {
-                    id: 'demo_3',
-                    type: 'single',
-                    stem: 'JavaScript 中用于将 JSON 字符串解析为对象的原生方法是？',
-                    options: [
-                        { key: 'A', text: 'JSON.stringify()' },
-                        { key: 'B', text: 'JSON.parse()' },
-                        { key: 'C', text: 'Object.fromJSON()' },
-                        { key: 'D', text: 'String.toObject()' }
-                    ],
-                    answer: 'B',
-                    explanation: 'JSON.parse() 用于将 JSON 字符串解析为 JavaScript 对象；JSON.stringify() 则是将对象序列化为字符串。'
-                },
-                {
-                    id: 'demo_4',
-                    type: 'single',
-                    stem: 'CSS Flexbox 布局中，用于设置主轴对齐方式的属性是？',
-                    options: [
-                        { key: 'A', text: 'align-items' },
-                        { key: 'B', text: 'justify-content' },
-                        { key: 'C', text: 'flex-direction' },
-                        { key: 'D', text: 'align-content' }
-                    ],
-                    answer: 'B',
-                    explanation: 'justify-content 定义项目在主轴上的对齐方式，align-items 定义在交叉轴上的对齐方式。'
-                },
-                {
-                    id: 'demo_5',
-                    type: 'single',
-                    stem: '关系型数据库中，用于消除重复行的 SQL 关键字是？',
-                    options: [
-                        { key: 'A', text: 'UNIQUE' },
-                        { key: 'B', text: 'DISTINCT' },
-                        { key: 'C', text: 'GROUP' },
-                        { key: 'D', text: 'FILTER' }
-                    ],
-                    answer: 'B',
-                    explanation: 'SELECT DISTINCT column_name FROM table_name 可用于返回唯一不同的值。'
-                },
-                {
-                    id: 'demo_6',
-                    type: 'single',
-                    stem: 'Git 中将远程分支最新代码拉取并自动合并到当前分支的命令是？',
-                    options: [
-                        { key: 'A', text: 'git fetch' },
-                        { key: 'B', text: 'git clone' },
-                        { key: 'C', text: 'git pull' },
-                        { key: 'D', text: 'git push' }
-                    ],
-                    answer: 'C',
-                    explanation: 'git pull 相当于 git fetch 加上 git merge，会拉取远程更新并合并到当前分支。'
-                },
-                {
-                    id: 'demo_7',
-                    type: 'single',
-                    stem: '操作系统中，进程调度算法“时间片轮转（RR）”主要适用于？',
-                    options: [
-                        { key: 'A', text: '批处理系统' },
-                        { key: 'B', text: '分时交互系统' },
-                        { key: 'C', text: '硬实时控制系统' },
-                        { key: 'D', text: '单道程序系统' }
-                    ],
-                    answer: 'B',
-                    explanation: '时间片轮转调度保证每个就绪进程在合理时间内获得 CPU 响应，非常适合分时系统。'
-                },
-                {
-                    id: 'demo_8',
-                    type: 'single',
-                    stem: 'HTML5 中用于在客户端持久化存储键值对且关闭浏览器不丢失的 API 是？',
-                    options: [
-                        { key: 'A', text: 'sessionStorage' },
-                        { key: 'B', text: 'localStorage' },
-                        { key: 'C', text: 'MemoryCache' },
-                        { key: 'D', text: 'TempCookie' }
-                    ],
-                    answer: 'B',
-                    explanation: 'localStorage 提供持久化本地存储，除非主动清除否则数据不会过期；sessionStorage 在会话结束时清除。'
-                },
-                {
-                    id: 'demo_9',
-                    type: 'single',
-                    stem: 'TCP 建立连接时的“三次握手”主要目的是？',
-                    options: [
-                        { key: 'A', text: '加密传输通道' },
-                        { key: 'B', text: '同步双方序列号并确认收发能力正常' },
-                        { key: 'C', text: '查询 DNS 域名解析' },
-                        { key: 'D', text: '自动压缩数据包体积' }
-                    ],
-                    answer: 'B',
-                    explanation: '三次握手用于确认客户端和服务端双方的发送与接收能力均正常，并同步初始序列号（ISN）。'
-                },
-                {
-                    id: 'demo_10',
-                    type: 'single',
-                    stem: '二叉树的前序遍历顺序是？',
-                    options: [
-                        { key: 'A', text: '左子树 -> 根节点 -> 右子树' },
-                        { key: 'B', text: '根节点 -> 左子树 -> 右子树' },
-                        { key: 'C', text: '左子树 -> 右子树 -> 根节点' },
-                        { key: 'D', text: '右子树 -> 根节点 -> 左子树' }
-                    ],
-                    answer: 'B',
-                    explanation: '前序遍历先访问根节点，再遍历左子树，最后遍历右子树（根-左-右）。'
-                },
-                {
-                    id: 'demo_11',
-                    type: 'single',
-                    stem: '在 Linux 中修改文件读写执行权限的常用命令是？',
-                    options: [
-                        { key: 'A', text: 'chown' },
-                        { key: 'B', text: 'chmod' },
-                        { key: 'C', text: 'chgrp' },
-                        { key: 'D', text: 'lsattr' }
-                    ],
-                    answer: 'B',
-                    explanation: 'chmod 用于更改文件或目录的访问权限（如 chmod 755 file），chown 用于修改所有者。'
-                },
-                {
-                    id: 'demo_12',
-                    type: 'single',
-                    stem: '在 CSS 盒模型中，设置 box-sizing: border-box 后，元素的 width 包含？',
-                    options: [
-                        { key: 'A', text: '仅 content 宽度' },
-                        { key: 'B', text: 'content + padding + border' },
-                        { key: 'C', text: 'content + margin' },
-                        { key: 'D', text: 'content + padding + margin' }
-                    ],
-                    answer: 'B',
-                    explanation: 'border-box 模式下，指定的 width 和 height 包含内容区（content）、内边距（padding）和边框（border）。'
-                },
-                {
-                    id: 'demo_13',
-                    type: 'multiple',
-                    stem: '以下属于 JavaScript 基本数据类型（Primitive Types）的有？',
-                    options: [
-                        { key: 'A', text: 'String' },
-                        { key: 'B', text: 'Number' },
-                        { key: 'C', text: 'Boolean' },
-                        { key: 'D', text: 'Array' }
-                    ],
-                    answer: 'ABC',
-                    explanation: 'String、Number、Boolean、Undefined、Null、Symbol、BigInt 是基本数据类型；Array 属于引用类型（Object）。'
-                },
-                {
-                    id: 'demo_14',
-                    type: 'multiple',
-                    stem: '数据库事务的 ACID 特性包含以下哪些项？',
-                    options: [
-                        { key: 'A', text: '原子性（Atomicity）' },
-                        { key: 'B', text: '一致性（Consistency）' },
-                        { key: 'C', text: '隔离性（Isolation）' },
-                        { key: 'D', text: '持久性（Durability）' }
-                    ],
-                    answer: 'ABCD',
-                    explanation: '数据库事务必须具备原子性、一致性、隔离性、持久性四大 ACID 特性。'
-                },
-                {
-                    id: 'demo_15',
-                    type: 'multiple',
-                    stem: '以下哪些措施可以有效提升 Web 前端页面首屏加载性能？',
-                    options: [
-                        { key: 'A', text: '开启 Gzip / Brotli 压缩' },
-                        { key: 'B', text: '静态资源接入 CDN 缓存' },
-                        { key: 'C', text: '路由与非首屏图片懒加载' },
-                        { key: 'D', text: '将所有大图转为未压缩 BMP 格式' }
-                    ],
-                    answer: 'ABC',
-                    explanation: '压缩传输、CDN 加速与懒加载均能显著降低首屏负载；未压缩 BMP 体积巨大，会严重拖慢加载。'
-                },
-                {
-                    id: 'demo_16',
-                    type: 'multiple',
-                    stem: '面向对象编程（OOP）的三大基本特征是？',
-                    options: [
-                        { key: 'A', text: '封装' },
-                        { key: 'B', text: '继承' },
-                        { key: 'C', text: '多态' },
-                        { key: 'D', text: '递归' }
-                    ],
-                    answer: 'ABC',
-                    explanation: '面向对象编程的三大核心特征为封装、继承和多态。'
-                },
-                {
-                    id: 'demo_17',
-                    type: 'multiple',
-                    stem: '属于 TCP/IP 应用层协议的有哪些？',
-                    options: [
-                        { key: 'A', text: 'HTTP / HTTPS' },
-                        { key: 'B', text: 'DNS' },
-                        { key: 'C', text: 'SMTP' },
-                        { key: 'D', text: 'ARP' }
-                    ],
-                    answer: 'ABC',
-                    explanation: 'HTTP、DNS、SMTP 均为应用层协议；ARP 属于网络接口/网络层地址解析协议。'
-                },
-                {
-                    id: 'demo_18',
-                    type: 'judge',
-                    stem: 'HTTPS 协议默认使用 443 端口进行加密通信。',
-                    options: [
-                        { key: 'A', text: '对' },
-                        { key: 'B', text: '错' }
-                    ],
-                    answer: '对',
-                    explanation: 'HTTP 默认端口为 80，HTTPS 默认端口为 443。'
-                },
-                {
-                    id: 'demo_19',
-                    type: 'judge',
-                    stem: '栈（Stack）是一种先进先出（FIFO）的线性数据结构。',
-                    options: [
-                        { key: 'A', text: '对' },
-                        { key: 'B', text: '错' }
-                    ],
-                    answer: '错',
-                    explanation: '栈遵循后进先出（LIFO）原则，队列（Queue）才遵循先进先出（FIFO）原则。'
-                },
-                {
-                    id: 'demo_20',
-                    type: 'judge',
-                    stem: '在 JavaScript 中，const 声明的对象引用不可重新赋值，但对象内部属性可以修改。',
-                    options: [
-                        { key: 'A', text: '对' },
-                        { key: 'B', text: '错' }
-                    ],
-                    answer: '对',
-                    explanation: 'const 锁定的是变量指向的内存引用地址，对象内部的属性字段依然是可变的。'
-                },
-                {
-                    id: 'demo_21',
-                    type: 'judge',
-                    stem: '快速排序算法在任何输入情况下的时间复杂度都恒为 O(n log n)。',
-                    options: [
-                        { key: 'A', text: '对' },
-                        { key: 'B', text: '错' }
-                    ],
-                    answer: '错',
-                    explanation: '快速排序平均时间复杂度为 O(n log n)，但在最坏情况下（如已有序且基准选择不当）会退化为 O(n²)。'
-                },
-                {
-                    id: 'demo_22',
-                    type: 'judge',
-                    stem: 'HTTP GET 请求具有幂等性，通常用于获取资源而非修改服务器状态。',
-                    options: [
-                        { key: 'A', text: '对' },
-                        { key: 'B', text: '错' }
-                    ],
-                    answer: '对',
-                    explanation: '根据 HTTP 规范，GET 请求应当是安全且幂等的，仅用于检索数据。'
-                },
-                {
-                    id: 'demo_23',
-                    type: 'judge',
-                    stem: 'SQL 语句中 WHERE 子句可以直接使用 COUNT()、SUM() 等聚合函数过滤分组。',
-                    options: [
-                        { key: 'A', text: '对' },
-                        { key: 'B', text: '错' }
-                    ],
-                    answer: '错',
-                    explanation: 'WHERE 在分组前过滤行，不能直接包含聚合函数；对分组后的聚合结果过滤应使用 HAVING 子句。'
-                },
-                {
-                    id: 'demo_24',
-                    type: 'short',
-                    stem: '简述防抖（Debounce）与节流（Throttle）的核心区别。',
-                    options: [],
-                    answer: '防抖是在高频事件停止触发 n 秒后才执行一次；节流是在高频事件触发期间每隔 n 秒固定执行一次。',
-                    explanation: '防抖（Debounce）关注“最后一次触发后的静默期”，适合搜索框输入联想；节流（Throttle）关注“固定频率稀释执行”，适合滚动监听或窗口缩放。'
-                },
-                {
-                    id: 'demo_25',
-                    type: 'short',
-                    stem: '简述从浏览器输入 URL 到页面渲染完成的主要过程。',
-                    options: [],
-                    answer: 'DNS 解析 -> TCP 三次握手 -> 发送 HTTP 请求 -> 服务端响应 -> 浏览器解析 HTML/CSS 构建 DOM 与 CSSOM -> 合成渲染树并布局绘制。',
-                    explanation: '核心阶段包括：1. DNS 域名解析；2. 建立 TCP/TLS 连接；3. 发送 HTTP 请求并接收响应；4. 解析构建 DOM 树与 CSSOM 树；5. 布局（Layout）与绘制（Paint）。'
-                }
-            ];
-        }
-
-        // 若当前文件由「导出」生成，优先读取内嵌快照题库
-        const EMBEDDED_SNAPSHOT = null;
-
-        /**
-         * ============================================================================
-         * 云端共享题库配置（填入 Supabase URL 与 Anon Key 后，全网用户可实时共享题库）
+         * 云端共享配置与同步引擎 (Supabase REST API - 全网免登录自由共享)
          * ============================================================================
          */
         const SUPABASE_CONFIG = {
             url: 'https://xzhtasqkqmysiwxtkdjm.supabase.co',
             anonKey: 'sb_publishable_uhlXUwSgSUt9D9Dk5Ge4Fw_9ikezN5G'
         };
+        const EMBEDDED_SNAPSHOT = null;
 
         function isCloudEnabled() {
-            return Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey && SUPABASE_CONFIG.url.startsWith('http'));
+            return Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.url.startsWith('http') && SUPABASE_CONFIG.anonKey);
         }
 
-        function setCloudStatus(text, active = false) {
-            const txtEl = document.getElementById('cloud-status-text');
-            const dotEl = document.getElementById('cloud-dot');
-            if (txtEl) txtEl.textContent = text;
-            if (dotEl) {
-                dotEl.className = `w-2.5 h-2.5 rounded-full inline-block ${active ? 'bg-[#10B981]' : 'bg-black/30'}`;
-            }
+        function setCloudStatus(text, connected = false) {
+            const dot = document.getElementById('cloud-dot');
+            const label = document.getElementById('cloud-status-text');
+            if (dot) dot.className = `w-2.5 h-2.5 rounded-full inline-block ${connected ? 'bg-[#10B981]' : 'bg-black/30'}`;
+            if (label) label.textContent = text;
         }
 
         async function syncFromCloud(manual = false) {
             if (!isCloudEnabled()) {
                 setCloudStatus('本地模式（填入 Supabase 密钥即可开启全网共享）', false);
+                if (manual) toast('请先在代码中配置 SUPABASE_CONFIG');
                 return;
             }
-            setCloudStatus('正在同步全网共享题库...', true);
             try {
-                const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions?select=*&order=created_at.desc&limit=2000`;
+                const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions?select=*&order=created_at.desc`;
                 const res = await fetch(endpoint, {
                     headers: {
                         'apikey': SUPABASE_CONFIG.anonKey,
                         'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
                     }
                 });
-                if (!res.ok) throw new Error('云端拉取失败');
+                if (!res.ok) throw new Error('Cloud fetch failed');
                 const rows = await res.json();
                 if (Array.isArray(rows) && rows.length > 0) {
-                    const cloudQuestions = rows.map((r, i) => normalizeQ({
+                    const cloudItems = rows.map((r, i) => normalizeQ({
                         id: r.id,
                         company: r.company,
                         role: r.role,
                         deckName: r.deck_name,
-                        ownerId: r.owner_id,
-                        ownerName: r.owner_name,
-                        ownerProvider: r.owner_provider,
                         type: r.type,
                         stem: r.stem,
-                        options: typeof r.options === 'string' ? JSON.parse(r.options) : r.options,
+                        options: r.options,
                         answer: r.answer,
                         explanation: r.explanation
-                    }, i)).filter(Boolean);
-
-                    const existingMap = new Map(state.bank.map(q => [q.id, q]));
-                    cloudQuestions.forEach(cq => existingMap.set(cq.id, cq));
-                    state.bank = [...existingMap.values()];
+                    }, i));
+                    const map = new Map();
+                    state.bank.forEach(q => map.set(q.id, q));
+                    cloudItems.forEach(q => { if (q) map.set(q.id, q); });
+                    state.bank = [...map.values()];
                     persistBank();
                     if (state.view === 'bank') renderBankList();
                 }
                 setCloudStatus(`已连接全网共享云端（共 ${state.bank.length} 题）`, true);
                 if (manual) {
                     triggerHaptic('success');
-                    toast('云端题库同步完成');
+                    toast('云端题库已同步');
                 }
             } catch (e) {
-                setCloudStatus('云端连接失败，已自动切换本地存储', false);
+                setCloudStatus('云端连接失败，当前使用本地题库', false);
                 if (manual) {
                     triggerHaptic('error');
-                    toast('云端同步失败，请检查配置');
+                    toast('云端同步失败');
                 }
             }
         }
 
         async function pushQuestionsToCloud(questions) {
-            if (!isCloudEnabled() || !questions.length) return false;
+            if (!isCloudEnabled() || !questions.length) return;
             try {
                 const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions`;
-                const authToken = state.user?.accessToken || SUPABASE_CONFIG.anonKey;
-                const payload = questions.map(q => ({
-                    id: q.id,
-                    company: q.company,
-                    role: q.role,
-                    deck_name: q.deckName,
-                    owner_id: q.ownerId,
-                    owner_name: q.ownerName,
-                    owner_provider: q.ownerProvider,
-                    type: q.type,
-                    stem: q.stem,
-                    options: q.options,
-                    answer: q.answer,
-                    explanation: q.explanation
-                }));
+                const payload = questions.map(q => {
+                    const m = getDeckMeta(q);
+                    return {
+                        id: q.id,
+                        company: m.company,
+                        role: m.role,
+                        deck_name: m.deckName,
+                        type: q.type,
+                        stem: q.stem,
+                        options: q.options || [],
+                        answer: q.answer,
+                        explanation: q.explanation || ''
+                    };
+                });
                 const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'apikey': SUPABASE_CONFIG.anonKey,
-                        'Authorization': `Bearer ${authToken}`,
-                        'Prefer': 'resolution=merge-duplicates,return=minimal'
+                        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+                        'Prefer': 'resolution=merge-duplicates'
                     },
                     body: JSON.stringify(payload)
                 });
                 if (res.ok) {
                     setCloudStatus(`已连接全网共享云端（共 ${state.bank.length} 题）`, true);
-                    return true;
                 }
-            } catch (e) {}
-            return false;
+            } catch (e) {
+                console.warn('Cloud push error:', e);
+            }
         }
 
         async function deleteCloudQuestionsByIds(ids) {
-            if (!isCloudEnabled() || !ids.length || !state.user) return;
+            if (!isCloudEnabled() || !ids.length) return;
             try {
-                const authToken = state.user.accessToken || SUPABASE_CONFIG.anonKey;
-                const idList = ids.map(id => encodeURIComponent(id)).join(',');
-                const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions?id=in.(${idList})&owner_id=eq.${encodeURIComponent(state.user.id)}`;
+                const encoded = ids.map(id => `"${String(id).replace(/"/g, '\\"')}"`).join(',');
+                const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions?id=in.(${encodeURIComponent(encoded)})`;
                 await fetch(endpoint, {
                     method: 'DELETE',
                     headers: {
                         'apikey': SUPABASE_CONFIG.anonKey,
-                        'Authorization': `Bearer ${authToken}`
+                        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
                     }
                 });
-            } catch (e) {}
+                setCloudStatus(`已连接全网共享云端（共 ${state.bank.length} 题）`, true);
+            } catch (e) {
+                console.warn('Cloud delete error:', e);
+            }
         }
 
         /**
          * ============================================================================
-         * 初始化与本地存储读写
+         * 初始化与存储持久化
          * ============================================================================
          */
-        function initApp() {
-            loadUserSession();
-            loadLocalData();
-            bindUploadEvents();
+        async function initApp() {
+            if (EMBEDDED_SNAPSHOT && Array.isArray(EMBEDDED_SNAPSHOT.bank)) {
+                state.bank = EMBEDDED_SNAPSHOT.bank.map((q, i) => normalizeQ(q, i)).filter(Boolean);
+                state.wrongIds = new Set(EMBEDDED_SNAPSHOT.wrong || []);
+                persistBank();
+                persistWrong();
+            } else {
+                try {
+                    const savedBank = JSON.parse(localStorage.getItem(KEY_BANK) || 'null');
+                    if (Array.isArray(savedBank) && savedBank.length > 0) {
+                        state.bank = savedBank.map((q, i) => normalizeQ(q, i)).filter(Boolean);
+                    } else {
+                        state.bank = getBuiltinBank();
+                        persistBank();
+                    }
+                } catch (e) {
+                    state.bank = getBuiltinBank();
+                }
+
+                try {
+                    const savedWrong = JSON.parse(localStorage.getItem(KEY_WRONG) || '[]');
+                    if (Array.isArray(savedWrong)) {
+                        state.wrongIds = new Set(savedWrong);
+                    }
+                } catch (e) {
+                    state.wrongIds = new Set();
+                }
+            }
+
+            bindFileDrop();
             bindKeyboardShortcuts();
+            updateBadges();
+            refreshDeckSelector();
+            startNewSession(true);
+
             if (window.innerWidth < 1024) {
                 state.drawerOpen = false;
             }
-            updatePillUI();
-            startNewSession(true);
-            refreshTopBadges();
-            syncFromCloud(false);
-        }
 
-        function loadLocalData() {
-            try {
-                const rawBank = localStorage.getItem(KEY_BANK);
-                if (rawBank) {
-                    const parsed = JSON.parse(rawBank);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        state.bank = parsed;
-                    }
-                }
-                if (state.bank.length === 0) {
-                    if (EMBEDDED_SNAPSHOT && Array.isArray(EMBEDDED_SNAPSHOT.bank) && EMBEDDED_SNAPSHOT.bank.length > 0) {
-                        state.bank = EMBEDDED_SNAPSHOT.bank;
-                    } else {
-                        state.bank = getBuiltinBank();
-                    }
-                    persistBank();
-                }
-
-                const rawWrong = localStorage.getItem(KEY_WRONG);
-                if (rawWrong) {
-                    const arr = JSON.parse(rawWrong);
-                    if (Array.isArray(arr)) state.wrongIds = new Set(arr);
-                } else if (EMBEDDED_SNAPSHOT && Array.isArray(EMBEDDED_SNAPSHOT.wrong)) {
-                    state.wrongIds = new Set(EMBEDDED_SNAPSHOT.wrong);
-                    persistWrong();
-                }
-            } catch (e) {
-                state.bank = getBuiltinBank();
-            }
+            await syncFromCloud(false);
+            refreshDeckSelector();
         }
 
         function persistBank() {
             try {
                 localStorage.setItem(KEY_BANK, JSON.stringify(state.bank));
             } catch (e) {}
-            refreshTopBadges();
+            updateBadges();
+            refreshDeckSelector();
         }
 
         function persistWrong() {
             try {
                 localStorage.setItem(KEY_WRONG, JSON.stringify([...state.wrongIds]));
             } catch (e) {}
-            refreshTopBadges();
+            updateBadges();
         }
 
-        function refreshTopBadges() {
-            const validIds = new Set(state.bank.map(q => q.id));
-            for (const id of [...state.wrongIds]) {
-                if (!validIds.has(id)) state.wrongIds.delete(id);
-            }
-            document.getElementById('badge-bank').textContent = state.bank.length;
-            document.getElementById('badge-wrong').textContent = state.wrongIds.size;
-            document.getElementById('bank-total-label').textContent = `共 ${state.bank.length} 题`;
-            document.getElementById('wrong-header-label').textContent = `错题本 (${state.wrongIds.size})`;
-            syncTrainDeckSelector();
+        function updateBadges() {
+            const bBank = document.getElementById('badge-bank');
+            const bWrong = document.getElementById('badge-wrong');
+            const wHeader = document.getElementById('wrong-header-label');
+            if (bBank) bBank.textContent = state.bank.length;
+            if (bWrong) bWrong.textContent = state.wrongIds.size;
+            if (wHeader) wHeader.textContent = `错题本 (${state.wrongIds.size})`;
         }
 
-        function syncTrainDeckSelector() {
+        function refreshDeckSelector() {
             const sel = document.getElementById('train-deck-select');
             if (!sel) return;
             const deckMap = new Map();
@@ -1452,58 +896,90 @@
                 const key = getDeckKey(q);
                 const m = getDeckMeta(q);
                 if (!deckMap.has(key)) {
-                    deckMap.set(key, { key, label: `${m.company} · ${m.role} · ${m.deckName}`, count: 0 });
+                    deckMap.set(key, { label: `${m.company} · ${m.role} · ${m.deckName}`, count: 0 });
                 }
                 deckMap.get(key).count++;
             });
 
-            if (state.selectedDeckKey !== 'all' && !deckMap.has(state.selectedDeckKey)) {
-                state.selectedDeckKey = 'all';
-            }
+            const prev = state.selectedDeckKey;
+            sel.innerHTML = `<option value="all">全部题库 (${state.bank.length})</option>` +
+                [...deckMap.entries()].map(([k, v]) => `<option value="${esc(k)}">${esc(v.label)} (${v.count})</option>`).join('');
 
-            let html = `<option value="all">全部题库 (${state.bank.length})</option>`;
-            deckMap.forEach(d => {
-                html += `<option value="${esc(d.key)}">${esc(d.label)} (${d.count})</option>`;
+            if (prev !== 'all' && deckMap.has(prev)) {
+                sel.value = prev;
+            } else {
+                state.selectedDeckKey = 'all';
+                sel.value = 'all';
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 视图切换与抽屉导航
+         * ============================================================================
+         */
+        function switchView(viewName) {
+            triggerHaptic('light');
+            state.view = viewName;
+
+            ['train', 'bank', 'wrong'].forEach(v => {
+                const sec = document.getElementById(`view-${v}`);
+                const tab = document.getElementById(`tab-${v}`);
+                if (sec) sec.classList.toggle('hidden', v !== viewName);
+                if (tab) {
+                    tab.className = v === viewName
+                        ? 'btn-black h-9 px-3 text-xs flex items-center gap-1'
+                        : 'btn-white h-9 px-3 text-xs flex items-center gap-1';
+                }
             });
-            sel.innerHTML = html;
-            sel.value = state.selectedDeckKey;
+
+            const trainCtrls = document.getElementById('train-top-controls');
+            const paletteBtn = document.getElementById('btn-toggle-palette');
+            if (trainCtrls) trainCtrls.style.display = viewName === 'train' ? 'flex' : 'none';
+            if (paletteBtn) paletteBtn.style.visibility = viewName === 'train' ? 'visible' : 'hidden';
+
+            if (viewName === 'bank') renderBankList();
+            if (viewName === 'wrong') renderWrongList();
+        }
+
+        function toggleDrawer(force) {
+            triggerHaptic('light');
+            const drawer = document.getElementById('question-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            if (!drawer) return;
+
+            const isDesktop = window.innerWidth >= 1024;
+            if (isDesktop) {
+                const currentlyHidden = drawer.classList.contains('lg:hidden');
+                const nextShow = typeof force === 'boolean' ? force : currentlyHidden;
+                drawer.classList.toggle('lg:hidden', !nextShow);
+                state.drawerOpen = nextShow;
+                if (nextShow) renderPalette(true);
+            } else {
+                const currentlyOpen = !drawer.classList.contains('-translate-x-full');
+                const nextOpen = typeof force === 'boolean' ? force : !currentlyOpen;
+                drawer.classList.toggle('-translate-x-full', !nextOpen);
+                if (backdrop) backdrop.classList.toggle('hidden', !nextOpen);
+                state.drawerOpen = nextOpen;
+                if (nextOpen) renderPalette(true);
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 抽题配置与训练会话管理
+         * ============================================================================
+         */
+        function setTrainMode(mode) {
+            triggerHaptic('light');
+            state.trainMode = mode;
+            updatePillUI();
+            startNewSession();
         }
 
         function setTrainDeckFilter(deckKey) {
             triggerHaptic('light');
             state.selectedDeckKey = deckKey || 'all';
-            startNewSession();
-        }
-
-        function switchView(view) {
-            triggerHaptic('light');
-            state.view = view;
-            ['train', 'bank', 'wrong'].forEach(v => {
-                const sec = document.getElementById(`view-${v}`);
-                const tab = document.getElementById(`tab-${v}`);
-                const active = v === view;
-                if (sec) sec.classList.toggle('hidden', !active);
-                if (tab) {
-                    if (v === 'train') {
-                        tab.className = `${active ? 'btn-black' : 'btn-white'} h-9 px-3 text-xs`;
-                    } else {
-                        tab.className = `${active ? 'btn-black' : 'btn-white'} h-9 px-3 text-xs flex items-center gap-1`;
-                    }
-                }
-            });
-            const ctrl = document.getElementById('train-top-controls');
-            const palBtn = document.getElementById('btn-toggle-palette');
-            if (ctrl) ctrl.style.visibility = view === 'train' ? 'visible' : 'hidden';
-            if (palBtn) palBtn.style.visibility = view === 'train' ? 'visible' : 'hidden';
-
-            if (view === 'bank') renderBankList();
-            if (view === 'wrong') renderWrongList();
-        }
-
-        function setTrainMode(mode) {
-            triggerHaptic('light');
-            state.trainMode = mode;
-            updatePillUI();
             startNewSession();
         }
 
@@ -1517,103 +993,62 @@
         function updatePillUI() {
             const mAll = document.getElementById('mode-all');
             const mWrong = document.getElementById('mode-wrong');
-            if (mAll) {
-                mAll.className = `seg-item px-2.5 py-1 text-xs ${state.trainMode === 'all' ? 'bg-black text-white' : 'text-black hover:bg-black/5'}`;
-            }
-            if (mWrong) {
-                mWrong.className = `seg-item px-2.5 py-1 text-xs ${state.trainMode === 'wrong' ? 'bg-black text-white' : 'text-black hover:bg-black/5'}`;
-            }
+            if (mAll) mAll.className = `seg-item px-2.5 py-1 text-xs ${state.trainMode === 'all' ? 'bg-black text-white' : 'text-black hover:bg-black/5'}`;
+            if (mWrong) mWrong.className = `seg-item px-2.5 py-1 text-xs ${state.trainMode === 'wrong' ? 'bg-black text-white' : 'text-black hover:bg-black/5'}`;
 
             document.querySelectorAll('.count-pill').forEach(btn => {
-                const c = Number(btn.dataset.count);
-                const label = btn.textContent;
-                btn.className = `count-pill seg-item px-2.5 py-1 text-xs ${c === state.questionCount ? 'bg-black text-white' : 'text-black hover:bg-black/5'}`;
-                btn.textContent = label;
+                const c = Number(btn.getAttribute('data-count'));
+                const isMobile = btn.textContent.includes('题');
+                btn.className = `count-pill seg-item ${isMobile ? 'px-3' : 'px-2.5'} py-1 text-xs ${c === state.questionCount ? 'bg-black text-white' : 'text-black hover:bg-black/5'}`;
             });
         }
 
-        function toast(msg) {
-            const box = document.getElementById('toast-box');
-            const el = document.createElement('div');
-            el.className = 'bg-black text-white border border-white/20 rounded-[10px] px-4 py-2 text-xs shadow-xl toast-slide';
-            el.textContent = msg;
-            box.appendChild(el);
-            setTimeout(() => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(4px) scale(0.96)';
-                el.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-                setTimeout(() => el.remove(), 220);
-            }, 1700);
-        }
-
-        function confirmAction(title, desc, onOk) {
-            triggerHaptic('light');
-            const dlg = document.getElementById('confirm-dialog');
-            document.getElementById('confirm-title').textContent = title;
-            document.getElementById('confirm-desc').textContent = desc;
-            dlg.classList.remove('hidden');
-            dlg.classList.add('flex');
-            const close = () => {
-                triggerHaptic('light');
-                dlg.classList.add('hidden');
-                dlg.classList.remove('flex');
-            };
-            document.getElementById('confirm-no').onclick = close;
-            document.getElementById('confirm-yes').onclick = () => {
-                dlg.classList.add('hidden');
-                dlg.classList.remove('flex');
-                onOk();
-            };
-        }
-
-        /**
-         * ============================================================================
-         * 抽题引擎（10-20题随机抽取，初始不显示答案）
-         * ============================================================================
-         */
-        function shuffle(arr) {
-            const copy = [...arr];
-            for (let i = copy.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [copy[i], copy[j]] = [copy[j], copy[i]];
-            }
-            return copy;
-        }
-
         function startNewSession(silent = false) {
-            let pool = state.bank;
-            if (state.selectedDeckKey !== 'all') {
-                const filteredByDeck = pool.filter(q => getDeckKey(q) === state.selectedDeckKey);
-                if (filteredByDeck.length > 0) {
-                    pool = filteredByDeck;
-                } else {
-                    state.selectedDeckKey = 'all';
-                    syncTrainDeckSelector();
-                }
-            }
+            let pool = [...state.bank];
+
             if (state.trainMode === 'wrong') {
                 pool = pool.filter(q => state.wrongIds.has(q.id));
-                if (pool.length === 0) {
-                    toast('当前筛选错题为空，已切回全部');
+                if (!pool.length) {
+                    if (!silent) {
+                        triggerHaptic('error');
+                        toast('错题本为空，已切回全部题库');
+                    }
                     state.trainMode = 'all';
                     updatePillUI();
-                    pool = state.selectedDeckKey !== 'all'
-                        ? state.bank.filter(q => getDeckKey(q) === state.selectedDeckKey)
-                        : state.bank;
+                    pool = [...state.bank];
                 }
             }
 
-            if (pool.length === 0) {
-                state.bank = getBuiltinBank();
-                persistBank();
-                pool = state.bank;
+            if (state.selectedDeckKey !== 'all') {
+                const filtered = pool.filter(q => getDeckKey(q) === state.selectedDeckKey);
+                if (filtered.length > 0) {
+                    pool = filtered;
+                } else {
+                    state.selectedDeckKey = 'all';
+                    const sel = document.getElementById('train-deck-select');
+                    if (sel) sel.value = 'all';
+                }
             }
 
-            const count = Math.min(state.questionCount, pool.length);
-            const picked = shuffle(pool).slice(0, count);
-            const records = {};
-            picked.forEach((_, idx) => {
-                records[idx] = {
+            if (!pool.length) {
+                state.bank = getBuiltinBank();
+                persistBank();
+                pool = [...state.bank];
+            }
+
+            // Fisher-Yates 洗牌随机抽取 10-20 题
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+
+            const count = Math.min(Math.max(state.questionCount, 10), 20, pool.length);
+            state.session.questions = pool.slice(0, count);
+            state.session.index = 0;
+            state.session.records = {};
+
+            state.session.questions.forEach((_, idx) => {
+                state.session.records[idx] = {
                     status: 'unanswered',
                     answer: null,
                     locked: false,
@@ -1621,124 +1056,102 @@
                 };
             });
 
-            state.session = { questions: picked, index: 0, records };
             hideSummaryModal(true);
-            applyDrawerUI(true);
-            renderPalette(true);
             renderQuestion(true);
+            renderPalette(true);
             if (!silent) {
-                triggerHaptic('light');
-                toast(`已抽取 ${picked.length} 题`);
+                triggerHaptic('success');
+                toast(`已抽取 ${count} 题`);
             }
+        }
+
+        function trainSpecificDeck(deckKey) {
+            triggerHaptic('light');
+            state.trainMode = 'all';
+            state.selectedDeckKey = deckKey;
+            updatePillUI();
+            const sel = document.getElementById('train-deck-select');
+            if (sel) sel.value = deckKey;
+            switchView('train');
+            startNewSession();
         }
 
         /**
          * ============================================================================
-         * 左侧所有题号抽屉（未答灰 / 答对绿 / 答错红，点击即跳转）
+         * 答题卡与题目渲染引擎
          * ============================================================================
          */
-        function toggleDrawer(force) {
-            triggerHaptic('light');
-            state.drawerOpen = force !== undefined ? force : !state.drawerOpen;
-            applyDrawerUI(state.drawerOpen);
-        }
-
-        function applyDrawerUI(stagger = false) {
-            const drawer = document.getElementById('question-drawer');
-            const backdrop = document.getElementById('drawer-backdrop');
-            const desktop = window.innerWidth >= 1024;
-
-            if (state.drawerOpen) {
-                drawer.classList.remove('hidden', '-translate-x-full');
-                drawer.classList.add('translate-x-0');
-                if (!desktop) backdrop.classList.remove('hidden');
-                if (stagger) renderPalette(true);
-            } else {
-                if (desktop) {
-                    drawer.classList.add('hidden');
-                } else {
-                    drawer.classList.remove('translate-x-0');
-                    drawer.classList.add('-translate-x-full');
-                    backdrop.classList.add('hidden');
-                }
-            }
-        }
-
         function renderPalette(stagger = false) {
-            const { questions, index, records } = state.session;
             const grid = document.getElementById('palette-grid');
+            if (!grid) return;
+
+            const total = state.session.questions.length;
             let answered = 0;
             let correct = 0;
 
-            grid.innerHTML = questions.map((_, i) => {
-                const st = records[i].status;
-                if (st !== 'unanswered') answered++;
-                if (st === 'correct') correct++;
+            grid.innerHTML = state.session.questions.map((_, idx) => {
+                const rec = state.session.records[idx] || { status: 'unanswered' };
+                if (rec.status !== 'unanswered') answered++;
+                if (rec.status === 'correct') correct++;
 
-                // 严格按要求：未答 灰色 | 答对 绿色 (#10B981) | 答错 红色 (#EF4444)
-                let tileStyle = 'rounded-[10px] bg-[#E5E7EB] text-black border border-black/25 hover:border-black transition-all duration-200 active:scale-90';
-                if (st === 'correct') tileStyle = 'rounded-[10px] bg-[#10B981] text-white border border-[#059669] transition-all duration-200 active:scale-90';
-                if (st === 'wrong') tileStyle = 'rounded-[10px] bg-[#EF4444] text-white border border-[#DC2626] transition-all duration-200 active:scale-90';
+                const isCurrent = idx === state.session.index;
+                let colorCls = 'bg-[#E5E7EB] text-black border border-black/25';
+                if (rec.status === 'correct') colorCls = 'bg-[#10B981] text-white border border-[#10B981]';
+                if (rec.status === 'wrong') colorCls = 'bg-[#EF4444] text-white border border-[#EF4444]';
 
-                const activeRing = i === index ? 'ring-2 ring-black ring-offset-2 ring-offset-white scale-105' : '';
-                const staggerCls = stagger ? 'tile-stagger' : '';
-                const staggerDelay = stagger ? `style="animation-delay: ${Math.min(i * 18, 250)}ms"` : '';
+                const activeRing = isCurrent ? 'ring-2 ring-black ring-offset-1 scale-105' : '';
+                const animCls = stagger ? 'tile-stagger' : '';
+                const delayStyle = stagger ? `style="animation-delay: ${idx * 18}ms"` : '';
 
-                return `<button onclick="jumpQuestion(${i})" ${staggerDelay} class="h-9 text-xs flex items-center justify-center ${tileStyle} ${activeRing} ${staggerCls}">${i + 1}</button>`;
+                return `
+                    <button onclick="jumpToQuestion(${idx})" ${delayStyle}
+                        class="${animCls} h-9 rounded-[9px] text-xs flex items-center justify-center transition-transform active:scale-90 ${colorCls} ${activeRing}">
+                        ${idx + 1}
+                    </button>
+                `;
             }).join('');
 
-            const total = questions.length;
-            const acc = answered ? Math.round((correct / answered) * 100) : 0;
+            const acc = answered > 0 ? Math.round((correct / answered) * 100) : 0;
             document.getElementById('stat-answered').textContent = `${answered}/${total}`;
             document.getElementById('stat-acc').textContent = `${acc}%`;
-            document.getElementById('nav-progress-text').textContent = `${index + 1}/${total}`;
+            document.getElementById('nav-progress-text').textContent = `${state.session.index + 1}/${total}`;
         }
 
-        function jumpQuestion(idx) {
+        function jumpToQuestion(idx) {
             if (idx < 0 || idx >= state.session.questions.length) return;
             triggerHaptic('light');
             state.session.index = idx;
             hideSummaryModal(true);
-            renderPalette(false);
             renderQuestion(true);
+            renderPalette(false);
+
             if (window.innerWidth < 1024) {
-                state.drawerOpen = false;
-                applyDrawerUI(false);
+                toggleDrawer(false);
             }
         }
 
         function stepQuestion(delta) {
-            const next = state.session.index + delta;
-            if (next < 0) return;
-            if (next >= state.session.questions.length) {
+            const nextIdx = state.session.index + delta;
+            if (nextIdx >= state.session.questions.length) {
                 showSummaryModal();
                 return;
             }
-            jumpQuestion(next);
-        }
-
-        /**
-         * ============================================================================
-         * 题目卡片渲染、判分与下方即时跳出解析
-         * ============================================================================
-         */
-        function typeLabel(type) {
-            const map = { single: '单选', multiple: '多选', judge: '判断', short: '简答' };
-            return map[type] || '单选';
-        }
-
-        function esc(str) {
-            return String(str ?? '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+            if (nextIdx < 0) {
+                triggerHaptic('error');
+                toast('已是第一题');
+                return;
+            }
+            jumpToQuestion(nextIdx);
         }
 
         function renderQuestion(animateCard = false) {
-            const { questions, index, records } = state.session;
-            const q = questions[index];
-            if (!q) return;
-            const rec = records[index];
+            const total = state.session.questions.length;
+            if (!total) return;
+
+            const idx = state.session.index;
+            const q = state.session.questions[idx];
+            const rec = state.session.records[idx];
+            const meta = getDeckMeta(q);
 
             const card = document.getElementById('quiz-card');
             if (animateCard && card) {
@@ -1747,289 +1160,305 @@
                 card.classList.add('question-slide');
             }
 
-            // 题号与题型与所属题库分类
-            const numStr = String(index + 1).padStart(2, '0');
-            const totStr = String(questions.length).padStart(2, '0');
-            const meta = getDeckMeta(q);
-            document.getElementById('q-number-label').textContent = `${numStr} / ${totStr}`;
+            document.getElementById('q-number-label').textContent = `${String(idx + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
             document.getElementById('q-type-label').textContent = typeLabel(q.type);
-            const deckBadge = document.getElementById('q-deck-badge');
-            if (deckBadge) {
-                deckBadge.textContent = `${meta.company} · ${meta.role} · ${meta.deckName}`;
-            }
+            document.getElementById('q-deck-badge').textContent = `${meta.company} · ${meta.role} · ${meta.deckName}`;
             document.getElementById('q-stem').textContent = q.stem;
 
-            // 归纳错题按钮同步
-            syncWrongButton(q.id, false);
+            syncWrongButtonUI(q.id);
 
-            // 渲染选项区
-            const box = document.getElementById('q-options-box');
-            box.innerHTML = '';
+            const optBox = document.getElementById('q-options-box');
+            const ansBox = document.getElementById('q-analysis-box');
 
+            // 渲染选项区（初始严格隐藏答案与解析）
             if (q.type === 'single' || q.type === 'judge') {
-                q.options.forEach(opt => {
-                    const val = q.type === 'judge' ? opt.text : opt.key;
-                    const picked = rec.answer === val;
-                    const right = q.answer === val;
+                const opts = q.options && q.options.length
+                    ? q.options
+                    : [{ key: 'A', text: '对' }, { key: 'B', text: '错' }];
 
-                    let cardCls = 'bg-white border-black text-black hover:bg-black/5';
-                    let keyCls = 'bg-black text-white';
-                    let motionCls = '';
+                optBox.innerHTML = opts.map(opt => {
+                    const userPicked = rec.answer === opt.key || (q.type === 'judge' && rec.answer === opt.text);
+                    const isRightOpt = isOptionCorrect(q, opt);
+
+                    let cls = 'bg-white border-black text-black';
+                    let badgeCls = 'bg-[#F5F5F7] text-black border border-black/30';
+                    let extraAnim = '';
 
                     if (rec.locked) {
-                        if (right) {
-                            cardCls = 'bg-[#10B981]/15 border-[#10B981] text-black';
-                            keyCls = 'bg-[#10B981] text-white';
-                            if (picked) motionCls = 'opt-correct-pop';
-                        } else if (picked) {
-                            cardCls = 'bg-[#EF4444]/15 border-[#EF4444] text-black';
-                            keyCls = 'bg-[#EF4444] text-white';
-                            motionCls = 'opt-wrong-shake';
+                        if (isRightOpt) {
+                            cls = 'bg-[#10B981] border-[#10B981] text-white';
+                            badgeCls = 'bg-white text-[#10B981]';
+                            if (userPicked) extraAnim = 'opt-correct-pop';
+                        } else if (userPicked) {
+                            cls = 'bg-[#EF4444] border-[#EF4444] text-white';
+                            badgeCls = 'bg-white text-[#EF4444]';
+                            extraAnim = 'opt-wrong-shake';
                         } else {
-                            cardCls = 'bg-white/60 border-black/20 text-black/45';
-                            keyCls = 'bg-black/20 text-white';
+                            cls = 'bg-white/60 border-black/20 text-black/45';
                         }
                     }
 
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.disabled = rec.locked;
-                    btn.className = `apple-option w-full text-left p-3.5 sm:p-4 flex items-center gap-3.5 ${cardCls} ${motionCls}`;
-                    btn.innerHTML = `
-                        <span class="w-8 h-8 rounded-[8px] text-xs flex items-center justify-center shrink-0 transition-colors ${keyCls}">${esc(opt.key)}</span>
-                        <span class="text-sm sm:text-base leading-snug">${esc(opt.text)}</span>
+                    return `
+                        <button type="button" ${rec.locked ? 'disabled' : ''} onclick="handleSingleOrJudgeSelect('${escAttr(opt.key)}', '${escAttr(opt.text)}')"
+                            class="apple-option ${extraAnim} w-full p-3.5 sm:p-4 text-left flex items-center gap-3 ${cls}">
+                            <span class="w-7 h-7 rounded-[8px] text-xs flex items-center justify-center shrink-0 ${badgeCls}">${esc(opt.key)}</span>
+                            <span class="text-xs sm:text-sm leading-snug">${esc(opt.text)}</span>
+                        </button>
                     `;
-                    btn.onclick = () => gradeSingleOrJudge(val);
-                    box.appendChild(btn);
-                });
+                }).join('');
             } else if (q.type === 'multiple') {
-                const pickedSet = new Set(rec.answer || []);
-                const rightSet = new Set(q.answer.split(''));
+                const selectedSet = new Set(Array.isArray(rec.answer) ? rec.answer : []);
+                const rightKeys = new Set(q.answer.toUpperCase().replace(/[^A-Z]/g, '').split(''));
 
-                q.options.forEach(opt => {
-                    const picked = pickedSet.has(opt.key);
-                    const right = rightSet.has(opt.key);
+                optBox.innerHTML = (q.options || []).map(opt => {
+                    const keyUp = opt.key.toUpperCase();
+                    const picked = selectedSet.has(keyUp);
+                    const isRight = rightKeys.has(keyUp);
 
-                    let cardCls = picked
-                        ? 'bg-black text-white border-black'
-                        : 'bg-white border-black text-black hover:bg-black/5';
-                    let keyCls = picked ? 'bg-white text-black' : 'bg-black text-white';
-                    let motionCls = '';
+                    let cls = picked ? 'bg-black border-black text-white' : 'bg-white border-black text-black';
+                    let badgeCls = picked ? 'bg-white text-black' : 'bg-[#F5F5F7] text-black border border-black/30';
+                    let extraAnim = '';
 
                     if (rec.locked) {
-                        if (right && picked) {
-                            cardCls = 'bg-[#10B981]/15 border-[#10B981] text-black';
-                            keyCls = 'bg-[#10B981] text-white';
-                            motionCls = 'opt-correct-pop';
-                        } else if (right && !picked) {
-                            cardCls = 'bg-white border-dashed border-[#10B981] text-black';
-                            keyCls = 'bg-[#10B981]/25 text-black';
-                        } else if (!right && picked) {
-                            cardCls = 'bg-[#EF4444]/15 border-[#EF4444] text-black';
-                            keyCls = 'bg-[#EF4444] text-white';
-                            motionCls = 'opt-wrong-shake';
+                        if (isRight) {
+                            cls = 'bg-[#10B981] border-[#10B981] text-white';
+                            badgeCls = 'bg-white text-[#10B981]';
+                            if (picked) extraAnim = 'opt-correct-pop';
+                        } else if (picked) {
+                            cls = 'bg-[#EF4444] border-[#EF4444] text-white';
+                            badgeCls = 'bg-white text-[#EF4444]';
+                            extraAnim = 'opt-wrong-shake';
                         } else {
-                            cardCls = 'bg-white/60 border-black/20 text-black/45';
-                            keyCls = 'bg-black/20 text-white';
+                            cls = 'bg-white/60 border-black/20 text-black/45';
                         }
                     }
 
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.disabled = rec.locked;
-                    btn.className = `apple-option w-full text-left p-3.5 sm:p-4 flex items-center gap-3.5 ${cardCls} ${motionCls}`;
-                    btn.innerHTML = `
-                        <span class="w-8 h-8 rounded-[8px] text-xs flex items-center justify-center shrink-0 transition-colors ${keyCls}">${esc(opt.key)}</span>
-                        <span class="text-sm sm:text-base leading-snug">${esc(opt.text)}</span>
+                    return `
+                        <button type="button" ${rec.locked ? 'disabled' : ''} onclick="toggleMultiOption('${escAttr(keyUp)}')"
+                            class="apple-option ${extraAnim} w-full p-3.5 sm:p-4 text-left flex items-center gap-3 ${cls}">
+                            <span class="w-7 h-7 rounded-[8px] text-xs flex items-center justify-center shrink-0 ${badgeCls}">${esc(opt.key)}</span>
+                            <span class="text-xs sm:text-sm leading-snug">${esc(opt.text)}</span>
+                        </button>
                     `;
-                    btn.onclick = () => {
-                        if (rec.locked) return;
-                        triggerHaptic('light');
-                        pickedSet.has(opt.key) ? pickedSet.delete(opt.key) : pickedSet.add(opt.key);
-                        rec.answer = [...pickedSet].sort();
-                        renderQuestion(false);
-                    };
-                    box.appendChild(btn);
-                });
-
-                if (!rec.locked) {
-                    const subBtn = document.createElement('button');
-                    subBtn.type = 'button';
-                    subBtn.className = 'btn-black h-10 px-6 text-xs mt-2';
-                    subBtn.textContent = '提交答案';
-                    subBtn.onclick = gradeMultiple;
-                    box.appendChild(subBtn);
-                }
+                }).join('') + (!rec.locked ? `
+                    <div class="pt-2">
+                        <button type="button" onclick="submitMultipleChoice()" class="btn-black h-10 px-6 text-xs">提交多选答案</button>
+                    </div>
+                ` : '');
             } else {
-                // 简答题
-                const ta = document.createElement('textarea');
-                ta.rows = 3;
-                ta.disabled = rec.locked;
-                ta.value = rec.answer || '';
-                ta.placeholder = '输入作答要点...';
-                ta.className = 'w-full rounded-xl bg-white border-2 border-black p-3.5 text-sm text-black outline-none focus:bg-[#F5F5F7] transition-colors';
-                ta.oninput = e => { rec.answer = e.target.value; };
-                box.appendChild(ta);
-
-                const row = document.createElement('div');
-                row.className = 'flex items-center gap-2 pt-1';
-                if (!rec.selfReveal && rec.status === 'unanswered') {
-                    row.innerHTML = `<button onclick="revealShort()" class="btn-black h-10 px-5 text-xs">核对答案</button>`;
-                } else {
-                    row.innerHTML = `
-                        <button onclick="gradeShort(true)" class="h-9 px-4 rounded-[10px] text-xs transition-transform active:scale-95 ${rec.status === 'correct' ? 'bg-[#10B981] text-white' : 'btn-white'}">答对</button>
-                        <button onclick="gradeShort(false)" class="h-9 px-4 rounded-[10px] text-xs transition-transform active:scale-95 ${rec.status === 'wrong' ? 'bg-[#EF4444] text-white' : 'btn-white'}">答错</button>
-                    `;
-                }
-                box.appendChild(row);
+                // 简答/填空题
+                const val = typeof rec.answer === 'string' ? rec.answer : '';
+                optBox.innerHTML = `
+                    <textarea id="short-answer-input" rows="3" ${rec.locked ? 'disabled' : ''} placeholder="输入你的作答思路..."
+                        class="w-full rounded-xl bg-white border-2 border-black p-3.5 text-xs sm:text-sm text-black outline-none">${esc(val)}</textarea>
+                    ${!rec.locked ? `
+                        <div class="flex items-center gap-2 pt-1">
+                            <button type="button" onclick="revealShortAnswer()" class="btn-black h-9 px-5 text-xs">核对答案</button>
+                        </div>
+                    ` : ''}
+                `;
             }
 
-            // 解析框显示逻辑（未答前绝不显示答案，选对/选错后跳出解析）
-            const analysisBox = document.getElementById('q-analysis-box');
-            const showAnalysis = rec.locked || rec.selfReveal;
-            if (showAnalysis) {
-                analysisBox.classList.remove('hidden');
+            // 仅在作答判定后显示题目下方解析
+            if (rec.locked) {
+                ansBox.classList.remove('hidden');
                 const resTag = document.getElementById('q-result-tag');
+                const ansTag = document.getElementById('q-answer-tag');
+                const expEl = document.getElementById('q-explanation');
+
                 if (rec.status === 'correct') {
                     resTag.textContent = '回答正确';
                     resTag.className = 'text-xs px-2.5 py-1 rounded-[7px] bg-[#10B981] text-white';
-                } else if (rec.status === 'wrong') {
+                } else {
                     resTag.textContent = '回答错误';
                     resTag.className = 'text-xs px-2.5 py-1 rounded-[7px] bg-[#EF4444] text-white';
-                } else {
-                    resTag.textContent = '请自评';
-                    resTag.className = 'text-xs px-2.5 py-1 rounded-[7px] bg-black text-white';
                 }
-                document.getElementById('q-answer-tag').textContent = `答案：${q.answer}`;
-                document.getElementById('q-explanation').textContent = q.explanation || '暂无详细解析。';
-                document.getElementById('chk-wrong-sync').checked = state.wrongIds.has(q.id);
+
+                ansTag.textContent = `标准答案：${q.answer}`;
+                expEl.textContent = q.explanation || '暂无详细解析。';
+
+                if (q.type === 'short' && rec.selfReveal) {
+                    expEl.innerHTML = `${esc(q.explanation || '暂无详细解析。')}
+                        <div class="mt-3 pt-2.5 border-t border-black/15 flex items-center gap-2">
+                            <span class="text-xs text-black/60">自评结果：</span>
+                            <button onclick="markShortSelf(true)" class="h-7 px-3 rounded-[7px] text-xs ${rec.status === 'correct' ? 'bg-[#10B981] text-white' : 'btn-white'}">答对</button>
+                            <button onclick="markShortSelf(false)" class="h-7 px-3 rounded-[7px] text-xs ${rec.status === 'wrong' ? 'bg-[#EF4444] text-white' : 'btn-white'}">答错</button>
+                        </div>`;
+                }
             } else {
-                analysisBox.classList.add('hidden');
+                ansBox.classList.add('hidden');
             }
 
-            // 上一题 / 下一题按钮状态（无论回答与否均可自由跳转）
-            document.getElementById('btn-prev').disabled = index === 0;
-            document.getElementById('btn-next-label').textContent = index === questions.length - 1 ? '完成结算' : '下一题';
+            // 更新底部上一题 / 下一题按钮状态
+            const prevBtn = document.getElementById('btn-prev');
+            const nextLabel = document.getElementById('btn-next-label');
+            if (prevBtn) prevBtn.disabled = idx === 0;
+            if (nextLabel) nextLabel.textContent = idx === total - 1 ? '完成结算' : '下一题';
         }
 
-        function gradeSingleOrJudge(val) {
-            const { questions, index, records } = state.session;
-            const q = questions[index];
-            const rec = records[index];
+        function isOptionCorrect(q, opt) {
+            const ans = String(q.answer || '').trim().toUpperCase();
+            const key = String(opt.key || '').trim().toUpperCase();
+            const text = String(opt.text || '').trim();
+            if (q.type === 'judge') {
+                const trueSet = new Set(['A', '对', '正确', 'TRUE', 'T', '√', 'YES', '1']);
+                const falseSet = new Set(['B', '错', '错误', 'FALSE', 'F', '×', 'NO', '0']);
+                if (trueSet.has(ans)) return trueSet.has(key) || trueSet.has(text.toUpperCase());
+                if (falseSet.has(ans)) return falseSet.has(key) || falseSet.has(text.toUpperCase());
+            }
+            return ans === key;
+        }
+
+        function handleSingleOrJudgeSelect(key, text) {
+            const idx = state.session.index;
+            const q = state.session.questions[idx];
+            const rec = state.session.records[idx];
             if (rec.locked) return;
 
-            const ok = val === q.answer;
-            rec.answer = val;
-            rec.status = ok ? 'correct' : 'wrong';
+            const isRight = isOptionCorrect(q, { key, text });
+            rec.answer = key;
             rec.locked = true;
+            rec.status = isRight ? 'correct' : 'wrong';
 
-            if (ok) {
+            if (isRight) {
                 triggerHaptic('success');
             } else {
                 triggerHaptic('error');
                 state.wrongIds.add(q.id);
                 persistWrong();
             }
+
+            renderQuestion(false);
             renderPalette(false);
+        }
+
+        function toggleMultiOption(keyUp) {
+            const idx = state.session.index;
+            const rec = state.session.records[idx];
+            if (rec.locked) return;
+
+            triggerHaptic('light');
+            const set = new Set(Array.isArray(rec.answer) ? rec.answer : []);
+            if (set.has(keyUp)) set.delete(keyUp);
+            else set.add(keyUp);
+            rec.answer = [...set].sort();
             renderQuestion(false);
         }
 
-        function gradeMultiple() {
-            const { questions, index, records } = state.session;
-            const q = questions[index];
-            const rec = records[index];
-            if (!rec.answer || rec.answer.length === 0) {
-                triggerHaptic('light');
-                toast('请先选择选项');
+        function submitMultipleChoice() {
+            const idx = state.session.index;
+            const q = state.session.questions[idx];
+            const rec = state.session.records[idx];
+            if (rec.locked) return;
+
+            const picked = Array.isArray(rec.answer) ? rec.answer.sort().join('') : '';
+            if (!picked) {
+                triggerHaptic('error');
+                toast('请至少选择一个选项');
                 return;
             }
-            const ok = [...rec.answer].sort().join('') === q.answer;
-            rec.status = ok ? 'correct' : 'wrong';
-            rec.locked = true;
 
-            if (ok) {
+            const expected = q.answer.toUpperCase().replace(/[^A-Z]/g, '').split('').sort().join('');
+            const isRight = picked === expected;
+
+            rec.locked = true;
+            rec.status = isRight ? 'correct' : 'wrong';
+
+            if (isRight) {
                 triggerHaptic('success');
             } else {
                 triggerHaptic('error');
                 state.wrongIds.add(q.id);
                 persistWrong();
             }
-            renderPalette(false);
+
             renderQuestion(false);
+            renderPalette(false);
         }
 
-        function revealShort() {
+        function revealShortAnswer() {
+            const idx = state.session.index;
+            const q = state.session.questions[idx];
+            const rec = state.session.records[idx];
+            const input = document.getElementById('short-answer-input');
+            rec.answer = input ? input.value : '';
+            rec.locked = true;
+            rec.selfReveal = true;
+            rec.status = 'correct';
             triggerHaptic('light');
-            state.session.records[state.session.index].selfReveal = true;
             renderQuestion(false);
+            renderPalette(false);
         }
 
-        function gradeShort(ok) {
-            const { questions, index, records } = state.session;
-            const q = questions[index];
-            const rec = records[index];
-            rec.status = ok ? 'correct' : 'wrong';
-            rec.locked = true;
-            if (ok) {
+        function markShortSelf(isRight) {
+            const idx = state.session.index;
+            const q = state.session.questions[idx];
+            const rec = state.session.records[idx];
+            rec.status = isRight ? 'correct' : 'wrong';
+            if (isRight) {
                 triggerHaptic('success');
             } else {
                 triggerHaptic('error');
                 state.wrongIds.add(q.id);
                 persistWrong();
             }
-            renderPalette(false);
             renderQuestion(false);
+            renderPalette(false);
         }
 
-        function toggleMistakeBook(force) {
+        /**
+         * ============================================================================
+         * 错题本归档切换与结算面板
+         * ============================================================================
+         */
+        function toggleMistakeBook(forceState) {
             const q = state.session.questions[state.session.index];
             if (!q) return;
-            triggerHaptic('light');
-            const add = force !== undefined ? force : !state.wrongIds.has(q.id);
-            if (add) {
+
+            const currentlyIn = state.wrongIds.has(q.id);
+            const nextIn = typeof forceState === 'boolean' ? forceState : !currentlyIn;
+
+            if (nextIn) {
                 state.wrongIds.add(q.id);
+                triggerHaptic('success');
                 toast('已归纳到错题本');
             } else {
                 state.wrongIds.delete(q.id);
+                triggerHaptic('light');
                 toast('已移出错题本');
             }
+
             persistWrong();
-            syncWrongButton(q.id, true);
-            const chk = document.getElementById('chk-wrong-sync');
-            if (chk) chk.checked = add;
+            syncWrongButtonUI(q.id, true);
         }
 
-        function syncWrongButton(id, pop = false) {
+        function syncWrongButtonUI(qId, pop = false) {
             const btn = document.getElementById('btn-wrong-toggle');
-            const active = state.wrongIds.has(id);
-            if (active) {
-                btn.className = 'btn-black h-8 px-3 text-xs';
-                btn.textContent = '已入错题';
-            } else {
-                btn.className = 'btn-white h-8 px-3 text-xs';
-                btn.textContent = '入错题';
+            const chk = document.getElementById('chk-wrong-sync');
+            const inWrong = state.wrongIds.has(qId);
+
+            if (btn) {
+                btn.className = `${inWrong ? 'btn-black' : 'btn-white'} h-8 px-3 text-xs flex items-center gap-1.5 ${pop ? 'badge-pop' : ''}`;
+                btn.textContent = inWrong ? '已入错题' : '入错题';
             }
-            if (pop) {
-                btn.classList.remove('badge-pop');
-                void btn.offsetWidth;
-                btn.classList.add('badge-pop');
-            }
+            if (chk) chk.checked = inWrong;
         }
 
         function showSummaryModal() {
             triggerHaptic('success');
-            const { questions, records } = state.session;
-            const total = questions.length;
+            const total = state.session.questions.length;
             let correct = 0;
             let wrong = 0;
-            Object.values(records).forEach(r => {
+            Object.values(state.session.records).forEach(r => {
                 if (r.status === 'correct') correct++;
                 if (r.status === 'wrong') wrong++;
             });
+            const rate = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+            document.getElementById('sum-rate').textContent = `${rate}%`;
             document.getElementById('sum-total').textContent = total;
             document.getElementById('sum-correct').textContent = correct;
             document.getElementById('sum-wrong').textContent = wrong;
-            document.getElementById('sum-rate').textContent = `${total ? Math.round((correct / total) * 100) : 0}%`;
 
             document.getElementById('quiz-card').classList.add('hidden');
             document.getElementById('summary-card').classList.remove('hidden');
@@ -2037,343 +1466,238 @@
 
         function hideSummaryModal(silent = false) {
             if (!silent) triggerHaptic('light');
-            document.getElementById('summary-card').classList.add('hidden');
-            document.getElementById('quiz-card').classList.remove('hidden');
+            const qCard = document.getElementById('quiz-card');
+            const sCard = document.getElementById('summary-card');
+            if (qCard) qCard.classList.remove('hidden');
+            if (sCard) sCard.classList.add('hidden');
         }
 
         /**
          * ============================================================================
-         * 智能题库上传与多格式正则解析引擎 (.txt / .md / .json / .csv)
+         * 智能题库解析引擎 (支持 TXT / MD / JSON / CSV 与多种内嵌格式)
          * ============================================================================
          */
-        function bindUploadEvents() {
-            const drop = document.getElementById('drop-area');
+        function bindFileDrop() {
+            const area = document.getElementById('drop-area');
             const picker = document.getElementById('file-picker');
+            if (!area || !picker) return;
 
-            ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => {
-                e.preventDefault();
-                drop.classList.add('bg-[#F5F5F7]', 'scale-[1.01]');
-            }));
-            ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => {
-                e.preventDefault();
-                drop.classList.remove('bg-[#F5F5F7]', 'scale-[1.01]');
-            }));
-            drop.addEventListener('drop', e => {
-                if (e.dataTransfer.files[0]) {
-                    triggerHaptic('light');
-                    loadFile(e.dataTransfer.files[0]);
-                }
+            ['dragenter', 'dragover'].forEach(ev => {
+                area.addEventListener(ev, e => {
+                    e.preventDefault();
+                    area.classList.add('bg-[#F5F5F7]', 'scale-[1.01]');
+                });
+            });
+            ['dragleave', 'drop'].forEach(ev => {
+                area.addEventListener(ev, e => {
+                    e.preventDefault();
+                    area.classList.remove('bg-[#F5F5F7]', 'scale-[1.01]');
+                });
+            });
+            area.addEventListener('drop', e => {
+                const file = e.dataTransfer?.files?.[0];
+                if (file) readUploadedFile(file);
             });
             picker.addEventListener('change', e => {
-                if (e.target.files[0]) {
-                    triggerHaptic('light');
-                    loadFile(e.target.files[0]);
-                }
+                const file = e.target.files?.[0];
+                if (file) readUploadedFile(file);
                 picker.value = '';
             });
         }
 
-        function loadFile(file) {
+        function readUploadedFile(file) {
             const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('paste-input').value = e.target.result;
-                parseAndSaveInput();
+            reader.onload = ev => {
+                const content = String(ev.target?.result || '');
+                document.getElementById('paste-input').value = content;
+                const deckInput = document.getElementById('meta-deck');
+                if (deckInput && !deckInput.value.trim()) {
+                    deckInput.value = file.name.replace(/\.[^.]+$/, '');
+                }
+                triggerHaptic('success');
+                toast(`已读取 ${file.name}`);
             };
             reader.readAsText(file, 'UTF-8');
         }
 
         function parseAndSaveInput() {
-            if (!state.user) {
-                triggerHaptic('error');
-                toast('请先通过 Apple 或 Google 账号登录');
-                openAuthModal();
-                return;
-            }
-
-            const raw = document.getElementById('paste-input').value.trim();
+            const raw = (document.getElementById('paste-input')?.value || '').trim();
             if (!raw) {
                 triggerHaptic('error');
-                toast('请先上传或粘贴题库');
+                toast('请先上传文件或粘贴题目');
                 return;
             }
 
             const company = (document.getElementById('meta-company')?.value || '').trim() || '自定义公司';
             const role = (document.getElementById('meta-role')?.value || '').trim() || '通用岗位';
-            const deckName = (document.getElementById('meta-deck')?.value || '').trim() || `题库_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}`;
-            const ownerMeta = {
-                company,
-                role,
-                deckName,
-                ownerId: state.user.id,
-                ownerName: state.user.name,
-                ownerProvider: state.user.provider
-            };
+            const deckName = (document.getElementById('meta-deck')?.value || '').trim() || '默认题库';
 
-            let list = [];
-            if ((raw.startsWith('[') && raw.endsWith(']')) || (raw.startsWith('{') && raw.endsWith('}'))) {
-                try {
-                    const obj = JSON.parse(raw);
-                    const arr = Array.isArray(obj) ? obj : (obj.questions || []);
-                    list = arr.map((it, i) => normalizeQ(it, i, ownerMeta)).filter(Boolean);
-                } catch (e) {}
+            let parsed = [];
+            try {
+                if (raw.startsWith('[') || raw.startsWith('{')) {
+                    const json = JSON.parse(raw);
+                    const arr = Array.isArray(json) ? json : (json.questions || json.data || []);
+                    parsed = arr.map((item, i) => normalizeQ({ ...item, company: item.company || company, role: item.role || role, deckName: item.deckName || deckName }, i)).filter(Boolean);
+                } else {
+                    parsed = parseSmartText(raw, { company, role, deckName });
+                }
+            } catch (e) {
+                parsed = parseSmartText(raw, { company, role, deckName });
             }
-            if (list.length === 0) {
-                list = parseSmartText(raw, ownerMeta);
-            }
-            if (list.length === 0) {
+
+            if (!parsed.length) {
                 triggerHaptic('error');
-                toast('未能识别有效题目');
+                toast('未能识别到有效题目，请参考示例格式');
                 return;
             }
 
-            const mode = document.querySelector('input[name="save-mode"]:checked').value;
-            if (mode === 'replace') {
-                // 覆盖模式仅覆盖当前用户自己上传的题库，绝不越权删除他人题库
-                const othersBank = state.bank.filter(q => !isQuestionOwner(q));
-                state.bank = othersBank.concat(list);
+            const saveMode = document.querySelector('input[name="save-mode"]:checked')?.value || 'append';
+            if (saveMode === 'replace') {
+                const oldIds = state.bank.map(q => q.id);
+                state.bank = parsed;
+                state.wrongIds.clear();
+                persistWrong();
+                deleteCloudQuestionsByIds(oldIds);
             } else {
-                state.bank = state.bank.concat(list);
+                state.bank = [...parsed, ...state.bank];
             }
+
             persistBank();
+            pushQuestionsToCloud(parsed);
+            document.getElementById('paste-input').value = '';
             renderBankList();
             startNewSession(true);
+
             triggerHaptic('success');
-
-            if (isCloudEnabled()) {
-                pushQuestionsToCloud(list).then(ok => {
-                    toast(ok ? `已共享至全网云端「${company} · ${deckName}」(${list.length}题)` : `已本地保存「${company} · ${deckName}」(${list.length}题)`);
-                });
-            } else {
-                toast(`已归档至「${company} · ${deckName}」(${list.length}题)`);
-            }
+            toast(`成功解析并存入 ${parsed.length} 道题目`);
         }
 
-        function normalizeQ(item, idx = 0, meta = {}) {
-            if (!item || !(item.stem || item.question || item.title)) return null;
-            const stem = String(item.stem || item.question || item.title).trim();
-            let options = [];
-            if (Array.isArray(item.options)) {
-                options = item.options.map((o, i) => {
-                    if (typeof o === 'string') {
-                        const m = o.match(/^([A-Z])[\.、\s\:：]+(.*)$/i);
-                        return m ? { key: m[1].toUpperCase(), text: m[2].trim() } : { key: String.fromCharCode(65 + i), text: o.trim() };
-                    }
-                    return { key: (o.key || String.fromCharCode(65 + i)).toUpperCase(), text: String(o.text || o.label || '') };
-                });
-            }
-            let ans = String(item.answer ?? '').trim();
-            let type = item.type || '';
-            if (!type) {
-                if (/^(对|错|正确|错误|true|false|√|×)$/i.test(ans)) type = 'judge';
-                else if (/^[A-Z]{2,}$/i.test(ans)) type = 'multiple';
-                else if (options.length >= 2) type = 'single';
-                else type = 'short';
-            }
-            if (type === 'judge') {
-                ans = /^(对|正确|true|√|yes|t|a)$/i.test(ans) ? '对' : '错';
-                options = [{ key: 'A', text: '对' }, { key: 'B', text: '错' }];
-            } else if (type === 'single' || type === 'multiple') {
-                ans = ans.toUpperCase().replace(/[^A-Z]/g, '');
-                if (type === 'multiple') ans = ans.split('').sort().join('');
-            }
-            return {
-                id: item.id || ('q_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).slice(2, 6)),
-                company: (item.company || meta.company || '自定义公司').trim(),
-                role: (item.role || meta.role || '通用岗位').trim(),
-                deckName: (item.deckName || meta.deckName || '默认题库').trim(),
-                ownerId: item.ownerId || meta.ownerId || 'system_builtin',
-                ownerName: item.ownerName || meta.ownerName || '官方示例',
-                ownerProvider: item.ownerProvider || meta.ownerProvider || 'system',
-                type,
-                stem,
-                options,
-                answer: ans || 'A',
-                explanation: String(item.explanation || item.analysis || '暂无解析').trim()
-            };
-        }
+        function parseSmartText(text, meta) {
+            const blocks = text
+                .replace(/\r\n/g, '\n')
+                .split(/\n(?=\s*(?:\d+[\.、\)）]|[（(]\d+[)）]|第\s*\d+\s*题|【(?:单选|多选|判断|简答|填空)[^\]]*】))/)
+                .map(b => b.trim())
+                .filter(Boolean);
 
-        function parseSmartText(text, meta = {}) {
-            const lines = text.replace(/\r\n/g, '\n').split('\n');
-            // CSV 简易识别
-            if (lines.length >= 2 && lines[0].includes(',') && /题干|题目|stem|question/i.test(lines[0])) {
-                const res = [];
-                for (let i = 1; i < lines.length; i++) {
-                    const cols = lines[i].split(',').map(s => s.trim());
-                    if (cols.length >= 3 && cols[0]) {
-                        const opts = cols[1] ? cols[1].split('|').map((t, k) => ({
-                            key: String.fromCharCode(65 + k),
-                            text: t.replace(/^[A-Z][\.、\s]+/i, '').trim()
-                        })) : [];
-                        res.push(normalizeQ({
-                            stem: cols[0],
-                            options: opts,
-                            answer: cols[2],
-                            explanation: cols[3] || ''
-                        }, i, meta));
-                    }
-                }
-                if (res.length) return res.filter(Boolean);
-            }
+            const results = [];
+            blocks.forEach((block, idx) => {
+                const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                if (!lines.length) return;
 
-            // 智能分块解析题号、题干内嵌括号答案、选项、答案行、解析行
-            const blocks = [];
-            let cur = [];
-            const qStartRe = /^\s*(?:第\s*\d+\s*题|\d+\s*[\.、\)）]|【(?:单选|多选|判断|简答).*?】|\[(?:单选|多选|判断|简答).*?\])/;
-
-            for (const rawLine of lines) {
-                const line = rawLine.trim();
-                if (!line) {
-                    if (cur.length > 0 && cur.some(l => /^(?:答案|参考答案|标准答案|Answer)/i.test(l))) {
-                        blocks.push(cur);
-                        cur = [];
-                    }
-                    continue;
-                }
-                if (qStartRe.test(line) && cur.length > 0 && (cur.some(l => /^[A-F][\.、\)）\s]/i.test(l)) || cur.some(l => /^(?:答案|参考答案)/i.test(l)))) {
-                    blocks.push(cur);
-                    cur = [line];
-                } else {
-                    cur.push(line);
-                }
-            }
-            if (cur.length) blocks.push(cur);
-
-            const parsed = [];
-            blocks.forEach((bLines, idx) => {
                 let stemLines = [];
                 let options = [];
                 let answer = '';
                 let explanation = '';
                 let explicitType = '';
 
-                for (const l of bLines) {
-                    const optMatch = l.match(/^([A-F])\s*[\.、\)）\:：]\s*(.+)$/i);
-                    const ansMatch = l.match(/^(?:答案|参考答案|标准答案|Answer)\s*[\:：]?\s*(.+)$/i);
-                    const expMatch = l.match(/^(?:解析|详解|分析|Explanation)\s*[\:：]?\s*(.+)$/i);
+                if (/【多选|多选题/.test(block)) explicitType = 'multiple';
+                else if (/【判断|判断题/.test(block)) explicitType = 'judge';
+                else if (/【简答|填空/.test(block)) explicitType = 'short';
+                else if (/【单选|单选题/.test(block)) explicitType = 'single';
 
+                lines.forEach(line => {
+                    const ansMatch = line.match(/^(?:【?正确答案】?|【?参考答案】?|【?答案】?|Answer)\s*[:：]\s*(.+)$/i);
                     if (ansMatch) {
                         answer = ansMatch[1].trim();
-                    } else if (expMatch) {
+                        return;
+                    }
+                    const expMatch = line.match(/^(?:【?题目解析】?|【?答案解析】?|【?解析】?|Explanation)\s*[:：]\s*(.+)$/i);
+                    if (expMatch) {
                         explanation = expMatch[1].trim();
-                    } else if (optMatch) {
+                        return;
+                    }
+                    const optMatch = line.match(/^([A-H])[\.、\)）:：\s]\s*(.+)$/i);
+                    if (optMatch && !answer) {
                         options.push({ key: optMatch[1].toUpperCase(), text: optMatch[2].trim() });
-                    } else {
-                        // 支持一行多个选项：A. xxx B. xxx
-                        if (/^[A-D][\.、]/i.test(l) && /\s+[B-F][\.、]/i.test(l)) {
-                            const segs = l.split(/\s+(?=[A-F][\.、])/i);
-                            segs.forEach(s => {
-                                const m = s.match(/^([A-F])[\.、\s]+(.+)$/i);
-                                if (m) options.push({ key: m[1].toUpperCase(), text: m[2].trim() });
-                            });
-                        } else {
-                            stemLines.push(l);
-                        }
+                        return;
+                    }
+                    if (explanation) {
+                        explanation += '\n' + line;
+                    } else if (!options.length && !answer) {
+                        stemLines.push(line);
+                    }
+                });
+
+                let stem = stemLines.join('\n')
+                    .replace(/^\s*(?:\d+[\.、\)）]|[（(]\d+[)）]|第\s*\d+\s*题)\s*/, '')
+                    .replace(/^【(?:单选|多选|判断|简答|填空)[^】]*】\s*/, '');
+
+                // 识别题干内嵌括号答案，如 （ A ） 或 （ √ ）
+                if (!answer) {
+                    const inlineAns = stem.match(/[（(]\s*([A-H]{1,6}|对|错|正确|错误|√|×|True|False)\s*[)）]/i);
+                    if (inlineAns) {
+                        answer = inlineAns[1].toUpperCase();
+                        stem = stem.replace(inlineAns[0], '（ ）');
                     }
                 }
 
-                let stem = stemLines.join('\n').trim();
                 if (!stem) return;
 
-                if (/\[多选\]|【多选】/i.test(stem)) explicitType = 'multiple';
-                else if (/\[判断\]|【判断】/i.test(stem)) explicitType = 'judge';
-                else if (/\[简答\]|【简答】/i.test(stem)) explicitType = 'short';
-                else if (/\[单选\]|【单选】/i.test(stem)) explicitType = 'single';
-
-                // 提取题干括号中的内嵌答案，如 ( A ) 或 （对）
-                if (!answer) {
-                    const inlineAns = stem.match(/[（\(]\s*([A-F]{1,6}|对|错|正确|错误|√|×)\s*[）\)]/i);
-                    if (inlineAns) {
-                        answer = inlineAns[1].trim();
-                        stem = stem.replace(inlineAns[0], '（   ）');
+                let type = explicitType;
+                if (!type) {
+                    if (/^(对|错|正确|错误|√|×|TRUE|FALSE)$/i.test(answer) && options.length <= 2) {
+                        type = 'judge';
+                    } else if (options.length >= 2) {
+                        const cleanAns = answer.replace(/[^A-H]/gi, '');
+                        type = cleanAns.length > 1 ? 'multiple' : 'single';
+                    } else {
+                        type = 'short';
                     }
                 }
 
-                stem = stem
-                    .replace(/^\s*(?:第\s*\d+\s*题|\d+\s*[\.、\)）])\s*/, '')
-                    .replace(/^(?:【(?:单选|多选|判断|简答).*?】|\[(?:单选|多选|判断|简答).*?\])\s*/, '')
-                    .trim();
+                if (type === 'judge' && !options.length) {
+                    options = [{ key: 'A', text: '对' }, { key: 'B', text: '错' }];
+                }
 
-                const q = normalizeQ({
-                    type: explicitType,
+                results.push({
+                    id: `q_${Date.now()}_${idx}_${Math.random().toString(36).slice(2, 6)}`,
+                    company: meta.company,
+                    role: meta.role,
+                    deckName: meta.deckName,
+                    type,
                     stem,
                     options,
-                    answer: answer || 'A',
-                    explanation: explanation || '暂无解析'
-                }, idx, meta);
-                if (q) parsed.push(q);
+                    answer: answer || (type === 'judge' ? '对' : (options[0]?.key || '略')),
+                    explanation: explanation || '暂无详细解析。'
+                });
             });
 
-            return parsed;
+            return results;
+        }
+
+        function normalizeQ(item, idx) {
+            if (!item || !item.stem) return null;
+            let opts = Array.isArray(item.options) ? item.options : [];
+            if (opts.length && typeof opts[0] === 'string') {
+                const letters = 'ABCDEFGH';
+                opts = opts.map((t, i) => ({ key: letters[i] || String(i + 1), text: t }));
+            }
+            const type = item.type || (opts.length >= 2 ? 'single' : 'short');
+            if (type === 'judge' && !opts.length) {
+                opts = [{ key: 'A', text: '对' }, { key: 'B', text: '错' }];
+            }
+            return {
+                id: item.id || `q_norm_${Date.now()}_${idx}_${Math.random().toString(36).slice(2, 6)}`,
+                company: item.company || '通用技术',
+                role: item.role || '综合岗位',
+                deckName: item.deckName || item.deck_name || '默认题库',
+                type,
+                stem: String(item.stem).trim(),
+                options: opts,
+                answer: String(item.answer || 'A').trim(),
+                explanation: String(item.explanation || '').trim()
+            };
         }
 
         /**
          * ============================================================================
-         * 题库分类聚合与智能近似度搜索（支持搜公司 / 岗位 / 题库名）
+         * 题库分类聚合与智能相似度搜索（Levenshtein + 字符重合率）
          * ============================================================================
          */
-        function levenshteinDistance(a, b) {
-            const m = a.length, n = b.length;
-            if (!m) return n;
-            if (!n) return m;
-            const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
-            for (let i = 0; i <= m; i++) dp[i][0] = i;
-            for (let j = 0; j <= n; j++) dp[0][j] = j;
-            for (let i = 1; i <= m; i++) {
-                for (let j = 1; j <= n; j++) {
-                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-                    dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
-                }
-            }
-            return dp[m][n];
-        }
-
-        function computeDeckRelevance(deck, rawQuery) {
-            const q = rawQuery.trim().toLowerCase();
-            if (!q) return 100;
-            const tokens = q.split(/\s+/).filter(Boolean);
-            const fields = [
-                { text: deck.company.toLowerCase(), weight: 1.2 },
-                { text: deck.role.toLowerCase(), weight: 1.15 },
-                { text: deck.deckName.toLowerCase(), weight: 1.0 }
-            ];
-            const combined = `${deck.company} ${deck.role} ${deck.deckName}`.toLowerCase();
-
-            let totalScore = 0;
-            for (const tok of tokens) {
-                let bestTokScore = 0;
-                for (const f of fields) {
-                    if (!f.text) continue;
-                    if (f.text === tok) {
-                        bestTokScore = Math.max(bestTokScore, 100 * f.weight);
-                    } else if (f.text.includes(tok)) {
-                        const coverage = tok.length / f.text.length;
-                        bestTokScore = Math.max(bestTokScore, (78 + coverage * 20) * f.weight);
-                    } else {
-                        // 计算子串窗口最小编辑距离，容忍简写或错别字
-                        const dist = levenshteinDistance(tok, f.text);
-                        const maxLen = Math.max(tok.length, f.text.length);
-                        const sim = Math.max(0, 1 - dist / maxLen);
-                        // 字符集合重叠率
-                        const setQ = new Set(tok.split(''));
-                        let overlap = 0;
-                        setQ.forEach(ch => { if (f.text.includes(ch)) overlap++; });
-                        const charRatio = overlap / setQ.size;
-                        const fuzzy = Math.max(sim * 70, charRatio * 65) * f.weight;
-                        bestTokScore = Math.max(bestTokScore, fuzzy);
-                    }
-                }
-                if (combined.includes(tok)) bestTokScore = Math.max(bestTokScore, 82);
-                totalScore += bestTokScore;
-            }
-            return Math.round(totalScore / tokens.length);
-        }
-
         function onSearchBank(val) {
-            state.searchQuery = val;
+            state.searchQuery = (val || '').trim();
             const clearBtn = document.getElementById('btn-clear-search');
-            if (clearBtn) {
-                val.trim() ? clearBtn.classList.remove('hidden') : clearBtn.classList.add('hidden');
-            }
+            if (clearBtn) clearBtn.classList.toggle('hidden', !state.searchQuery);
             renderBankList();
         }
 
@@ -2387,151 +1711,152 @@
             renderBankList();
         }
 
-        function startDeckTraining(deckKey) {
-            triggerHaptic('success');
-            state.selectedDeckKey = deckKey;
-            state.trainMode = 'all';
-            syncTrainDeckSelector();
-            updatePillUI();
-            switchView('train');
-            startNewSession();
+        function levenshteinDistance(a, b) {
+            const m = a.length, n = b.length;
+            if (!m) return n;
+            if (!n) return m;
+            const dp = Array.from({ length: m + 1 }, (_, i) => [i]);
+            for (let j = 1; j <= n; j++) dp[0][j] = j;
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                    dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+                }
+            }
+            return dp[m][n];
         }
 
-        function removeDeckGroup(deckKey) {
-            const targetQuestions = state.bank.filter(q => getDeckKey(q) === deckKey);
-            if (!targetQuestions.length) return;
-            const canRevoke = targetQuestions.every(q => isQuestionOwner(q));
-            if (!canRevoke) {
-                triggerHaptic('error');
-                toast('权限不足：仅上传者本人可撤销该题库');
-                return;
-            }
+        function computeSimilarityScore(query, targetFields) {
+            const q = query.toLowerCase().trim();
+            if (!q) return 1;
+            let best = 0;
 
-            confirmAction('撤销自己上传的题库', `确定撤销「${targetQuestions[0].deckName}」（共 ${targetQuestions.length} 题）？`, () => {
-                triggerHaptic('error');
-                const removedIds = targetQuestions.map(q => q.id);
-                const removedSet = new Set(removedIds);
-                state.bank = state.bank.filter(q => !removedSet.has(q.id));
-                removedIds.forEach(id => state.wrongIds.delete(id));
-                persistBank();
-                persistWrong();
-                deleteCloudQuestionsByIds(removedIds);
-                renderBankList();
-                toast('已撤销您上传的题库');
+            targetFields.forEach(rawField => {
+                const f = String(rawField || '').toLowerCase().trim();
+                if (!f) return;
+                if (f === q) { best = Math.max(best, 100); return; }
+                if (f.includes(q)) { best = Math.max(best, 85 + (q.length / f.length) * 10); return; }
+                if (q.includes(f)) { best = Math.max(best, 75); return; }
+
+                // 字符重叠比例
+                const qChars = [...new Set(q)];
+                const hit = qChars.filter(ch => f.includes(ch)).length;
+                const overlapScore = (hit / qChars.length) * 65;
+
+                // 编辑距离相似度
+                const dist = levenshteinDistance(q, f);
+                const maxLen = Math.max(q.length, f.length);
+                const editScore = Math.max(0, (1 - dist / maxLen) * 60);
+
+                best = Math.max(best, overlapScore, editScore);
             });
+
+            return best;
         }
 
         function renderBankList() {
+            const totalLabel = document.getElementById('bank-total-label');
             const deckBox = document.getElementById('deck-groups-list');
-            const box = document.getElementById('bank-items-list');
+            const itemBox = document.getElementById('bank-items-list');
+            if (!deckBox || !itemBox) return;
+
+            if (totalLabel) totalLabel.textContent = `共 ${state.bank.length} 题`;
+
             if (!state.bank.length) {
-                if (deckBox) deckBox.innerHTML = `<div class="py-8 text-center text-xs text-black/50">暂无分类题库</div>`;
-                box.innerHTML = `<div class="py-6 text-center text-xs text-black/50">暂无题目</div>`;
+                deckBox.innerHTML = `<div class="bg-white rounded-xl p-6 border border-black/20 text-center text-xs text-black/60">题库为空，请在上方上传或点击「重置」恢复示例</div>`;
+                itemBox.innerHTML = '';
                 return;
             }
 
-            // 1. 聚合题库分类（公司 / 岗位类型 / 题库名字 / 上传者）
-            const map = new Map();
+            // 按 公司 + 岗位 + 题库名字 聚合
+            const groupsMap = new Map();
             state.bank.forEach(q => {
                 const key = getDeckKey(q);
-                const m = getDeckMeta(q);
-                if (!map.has(key)) {
-                    map.set(key, { key, ...m, questions: [], isOwner: isQuestionOwner(q) });
+                const meta = getDeckMeta(q);
+                if (!groupsMap.has(key)) {
+                    groupsMap.set(key, { key, ...meta, questions: [] });
                 }
-                map.get(key).questions.push(q);
+                groupsMap.get(key).questions.push(q);
             });
 
-            let decks = [...map.values()];
-            const query = state.searchQuery.trim();
+            let groups = [...groupsMap.values()];
+            const query = state.searchQuery;
+
             if (query) {
-                decks = decks
-                    .map(d => ({ ...d, score: computeDeckRelevance(d, query) }))
-                    .filter(d => d.score >= 22)
+                groups = groups
+                    .map(g => ({
+                        ...g,
+                        score: computeSimilarityScore(query, [g.company, g.role, g.deckName, `${g.company}${g.role}`])
+                    }))
                     .sort((a, b) => b.score - a.score);
             }
 
-            if (deckBox) {
-                if (!decks.length) {
-                    deckBox.innerHTML = `<div class="p-6 rounded-xl bg-white border-2 border-black text-center text-xs text-black/60">未找到与「${esc(query)}」相近的题库</div>`;
-                } else {
-                    deckBox.innerHTML = decks.map((d, idx) => {
-                        const isTopMatch = query && idx === 0;
-                        const ownerBadge = d.isOwner
-                            ? `<span class="px-2 py-0.5 rounded-[7px] bg-black text-white text-[10px]">我上传的</span>`
-                            : `<span class="px-2 py-0.5 rounded-[7px] bg-[#F5F5F7] border border-black/25 text-black/65 text-[10px]">上传者: ${esc(d.ownerName)}</span>`;
-                        const actionBtn = d.isOwner
-                            ? `<button onclick="removeDeckGroup('${esc(d.key)}')" class="btn-white h-8 px-2.5 !rounded-[9px] text-[11px] flex items-center gap-1" title="仅上传者本人可撤销">
-                                   <svg class="w-3 h-3 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-                                   <span>撤销</span>
-                               </button>`
-                            : `<span class="h-8 px-2.5 rounded-[9px] bg-[#F5F5F7] border border-black/20 text-[11px] text-black/45 inline-flex items-center gap-1 select-none" title="他人上传的题库受保护，不允许操作">
-                                   <svg class="w-3 h-3 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path stroke-linecap="round" d="M8 11V7a4 4 0 018 0v4"></path></svg>
-                                   <span>已锁定</span>
-                               </span>`;
-
-                        return `
-                            <div class="p-4 rounded-xl bg-white border-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-transform duration-150 hover:translate-x-0.5">
-                                <div class="min-w-0 space-y-1.5">
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        <span class="px-2 py-0.5 rounded-[7px] bg-black text-white text-[11px]">${esc(d.company)}</span>
-                                        <span class="px-2 py-0.5 rounded-[7px] bg-[#F5F5F7] border border-black text-black text-[11px]">${esc(d.role)}</span>
-                                        <span class="text-[11px] text-black/60">${d.questions.length} 题</span>
-                                        ${ownerBadge}
-                                        ${isTopMatch ? `<span class="px-2 py-0.5 rounded-[7px] bg-[#10B981] text-white text-[10px]">最近匹配</span>` : ''}
-                                    </div>
-                                    <p class="text-sm text-black truncate">${esc(d.deckName)}</p>
-                                </div>
-                                <div class="flex items-center gap-2 shrink-0">
-                                    <button onclick="startDeckTraining('${esc(d.key)}')" class="btn-black h-8 px-3 text-xs">专项抽题</button>
-                                    ${actionBtn}
-                                </div>
+            deckBox.innerHTML = groups.map((g, idx) => {
+                const isBest = query && idx === 0 && g.score >= 25;
+                return `
+                    <div class="bg-white rounded-xl p-3.5 sm:p-4 border-[1.5px] border-black flex items-center justify-between gap-3 flex-wrap">
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="px-2 py-0.5 rounded-[6px] bg-black text-white text-[11px]">${esc(g.company)}</span>
+                                <span class="px-2 py-0.5 rounded-[6px] bg-[#F5F5F7] border border-black/30 text-[11px] text-black">${esc(g.role)}</span>
+                                <span class="text-[11px] text-black/60">${g.questions.length} 题</span>
+                                ${isBest ? `<span class="px-2 py-0.5 rounded-[6px] bg-[#10B981] text-white text-[10px]">最近匹配</span>` : ''}
                             </div>
-                        `;
-                    }).join('');
-                }
-            }
+                            <p class="text-sm text-black truncate">${esc(g.deckName)}</p>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="deleteDeckGroup('${escAttr(g.key)}')" class="btn-white h-8 px-2.5 !rounded-[8px] text-xs">删除</button>
+                            <button onclick="trainSpecificDeck('${escAttr(g.key)}')" class="btn-black h-8 px-3 !rounded-[8px] text-xs">专项抽题</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
-            // 2. 渲染单题明细列表（仅本人上传的题目显示删除按钮，他人题目显示锁定标识）
-            const visibleQuestions = query
-                ? state.bank.filter(q => decks.some(d => d.key === getDeckKey(q)))
+            // 单题明细列表（若正在搜索则按匹配题库排序展示）
+            const sortedQuestions = query
+                ? [...state.bank].sort((a, b) => {
+                    const sa = computeSimilarityScore(query, [a.company, a.role, a.deckName, a.stem]);
+                    const sb = computeSimilarityScore(query, [b.company, b.role, b.deckName, b.stem]);
+                    return sb - sa;
+                })
                 : state.bank;
 
-            box.innerHTML = visibleQuestions.map((q, i) => {
+            itemBox.innerHTML = sortedQuestions.map((q, idx) => {
                 const m = getDeckMeta(q);
-                const owned = isQuestionOwner(q);
-                const itemCtrl = owned
-                    ? `<button onclick="removeBankItem('${q.id}')" class="btn-white w-7 h-7 !rounded-[8px] flex items-center justify-center shrink-0" title="撤销该题">
-                           <svg class="w-3.5 h-3.5 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-                       </button>`
-                    : `<span class="w-7 h-7 rounded-[8px] bg-[#F5F5F7] border border-black/15 flex items-center justify-center shrink-0 text-black/35" title="他人题库不可删除">
-                           <svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path stroke-linecap="round" d="M8 11V7a4 4 0 018 0v4"></path></svg>
-                       </span>`;
-
                 return `
-                <div class="p-3 rounded-xl bg-white border-[1.5px] border-black flex items-center justify-between gap-3 transition-transform duration-150 hover:translate-x-0.5">
-                    <div class="min-w-0 flex-1 space-y-1">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[11px] text-black/60">${i + 1}</span>
-                            <span class="px-1.5 py-0.5 rounded-[6px] bg-black text-white text-[10px]">${typeLabel(q.type)}</span>
-                            <span class="text-[10px] text-black/60">${esc(m.company)} · ${esc(m.role)}</span>
-                            <span class="text-[10px] text-black/45">(${owned ? '我' : esc(m.ownerName)})</span>
+                    <div class="bg-white rounded-xl p-3 border border-black/25 flex items-center justify-between gap-3">
+                        <div class="min-w-0 flex-1 space-y-0.5">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[11px] text-black/50">${idx + 1}.</span>
+                                <span class="px-1.5 py-0.2 rounded bg-black text-white text-[10px]">${typeLabel(q.type)}</span>
+                                <span class="text-[10px] text-black/60 truncate">${esc(m.company)} · ${esc(m.role)}</span>
+                            </div>
+                            <p class="text-xs text-black truncate">${esc(q.stem)}</p>
                         </div>
-                        <p class="text-xs text-black truncate">${esc(q.stem)}</p>
+                        <button onclick="removeBankItem('${escAttr(q.id)}')" class="btn-white h-7 px-2.5 !rounded-[7px] text-[11px] shrink-0">删除</button>
                     </div>
-                    ${itemCtrl}
-                </div>
-            `;
+                `;
             }).join('');
         }
 
-        function removeBankItem(id) {
-            const target = state.bank.find(q => q.id === id);
-            if (!target) return;
-            if (!isQuestionOwner(target)) {
+        function deleteDeckGroup(deckKey) {
+            const target = state.bank.filter(q => getDeckKey(q) === deckKey);
+            if (!target.length) return;
+            confirmAction('删除题库', `确定删除该分类题库下的全部 ${target.length} 道题目？`, () => {
                 triggerHaptic('error');
-                toast('权限不足：仅上传者本人可撤销该题目');
-                return;
-            }
+                const delIds = target.map(q => q.id);
+                const delSet = new Set(delIds);
+                state.bank = state.bank.filter(q => !delSet.has(q.id));
+                delIds.forEach(id => state.wrongIds.delete(id));
+                persistBank();
+                persistWrong();
+                deleteCloudQuestionsByIds(delIds);
+                renderBankList();
+                toast('已删除该分类题库');
+            });
+        }
+
+        function removeBankItem(id) {
             triggerHaptic('error');
             state.bank = state.bank.filter(q => q.id !== id);
             state.wrongIds.delete(id);
@@ -2539,115 +1864,170 @@
             persistWrong();
             deleteCloudQuestionsByIds([id]);
             renderBankList();
-            toast('已撤销该题目');
-        }
-
-        function clearEntireBank() {
-            if (!state.user) {
-                triggerHaptic('error');
-                toast('请先登录后再管理自己上传的题库');
-                openAuthModal();
-                return;
-            }
-            const myQuestions = state.bank.filter(q => isQuestionOwner(q));
-            if (!myQuestions.length) {
-                triggerHaptic('error');
-                toast('您名下暂无可撤销的题库，他人题库不可清除');
-                return;
-            }
-            confirmAction('清空我上传的题库', `确定撤销您名下的全部 ${myQuestions.length} 道题目？（他人上传的题库将保留）`, () => {
-                triggerHaptic('error');
-                const myIds = myQuestions.map(q => q.id);
-                const myIdSet = new Set(myIds);
-                state.bank = state.bank.filter(q => !myIdSet.has(q.id));
-                myIds.forEach(id => state.wrongIds.delete(id));
-                persistBank();
-                persistWrong();
-                deleteCloudQuestionsByIds(myIds);
-                renderBankList();
-                toast('已清空您名下的题库');
-            });
-        }
-
-        function restoreDemoBank() {
-            triggerHaptic('success');
-            state.bank = getBuiltinBank();
-            persistBank();
-            renderBankList();
-            startNewSession(true);
-            toast('已恢复 25 道默认题');
-        }
-
-        function fillDemoText() {
-            triggerHaptic('light');
-            document.getElementById('paste-input').value = `1. HTTP 状态码 404 表示（ ）。
-A. 请求成功
-B. 重定向
-C. 资源未找到
-D. 服务器内部错误
-答案：C
-解析：404 Not Found 表示服务器无法找到所请求的资源。
-
-2. [多选] 前端核心三大技术栈包括（ ）。
-A. HTML
-B. CSS
-C. JavaScript
-D. MySQL
-答案：ABC
-解析：HTML 负责结构，CSS 负责样式，JavaScript 负责交互逻辑。
-
-3. [判断] 栈（Stack）遵循先进先出（FIFO）原则。
-答案：错
-解析：栈遵循后进先出（LIFO），队列才遵循先进先出（FIFO）。`;
-            toast('已填入示例');
+            toast('已删除题目');
         }
 
         /**
          * ============================================================================
-         * 错题本列表与专项特训
+         * 通用工具函数（Toast / 确认弹窗 / 转义）
+         * ============================================================================
+         */
+        function typeLabel(t) {
+            return { single: '单选', multiple: '多选', judge: '判断', short: '简答' }[t] || '单选';
+        }
+
+        function esc(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function escAttr(str) {
+            return String(str ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        function toast(msg) {
+            const box = document.getElementById('toast-box');
+            if (!box) return;
+            const el = document.createElement('div');
+            el.className = 'toast-slide px-4 py-2 rounded-xl bg-black text-white text-xs shadow-lg border border-white/15';
+            el.textContent = msg;
+            box.appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-6px)';
+                el.style.transition = 'all 0.22s ease';
+                setTimeout(() => el.remove(), 220);
+            }, 1800);
+        }
+
+        function confirmAction(title, desc, onConfirm) {
+            triggerHaptic('light');
+            const dlg = document.getElementById('confirm-dialog');
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-desc').textContent = desc;
+            dlg.classList.remove('hidden');
+            dlg.classList.add('flex');
+
+            const close = () => {
+                dlg.classList.add('hidden');
+                dlg.classList.remove('flex');
+            };
+            document.getElementById('confirm-no').onclick = () => {
+                triggerHaptic('light');
+                close();
+            };
+            document.getElementById('confirm-yes').onclick = () => {
+                close();
+                if (typeof onConfirm === 'function') onConfirm();
+            };
+        }
+
+        function clearEntireBank() {
+            if (!state.bank.length) return;
+            confirmAction('清空全部题库', `确定清空全部 ${state.bank.length} 道题目？`, () => {
+                triggerHaptic('error');
+                const allIds = state.bank.map(q => q.id);
+                state.bank = [];
+                state.wrongIds.clear();
+                persistBank();
+                persistWrong();
+                deleteCloudQuestionsByIds(allIds);
+                renderBankList();
+                toast('已清空');
+            });
+        }
+
+        function fillDemoText() {
+            triggerHaptic('light');
+            document.getElementById('meta-company').value = '字节跳动';
+            document.getElementById('meta-role').value = '前端开发';
+            document.getElementById('meta-deck').value = '2026核心基础真题';
+            document.getElementById('paste-input').value = `1. HTTP 状态码 304 代表什么含义？
+A. 永久重定向
+B. 临时重定向
+C. 资源未修改，可使用本地缓存
+D. 请求参数错误
+答案：C
+解析：304 Not Modified 表示客户端缓存的资源仍然有效，服务器无需重新传输完整响应体。
+
+2. 【多选】以下哪些属于 JavaScript 的基本数据类型？
+A. Symbol
+B. BigInt
+C. Object
+D. Undefined
+答案：ABD
+解析：ES6+ 规范中基本数据类型包括 String、Number、Boolean、Undefined、Null、Symbol、BigInt，Object 属于引用类型。
+
+3. 【判断】CSS 中 flex 布局默认主轴方向是水平从左到右。
+答案：对
+解析：flex-direction 默认值为 row，主轴沿水平方向从左至右排列。`;
+            toast('已填入示例模板');
+        }
+
+        function restoreDemoBank() {
+            confirmAction('重置内置示例', '恢复默认内置示例题库并保留当前云端连接？', () => {
+                triggerHaptic('success');
+                state.bank = getBuiltinBank();
+                persistBank();
+                renderBankList();
+                startNewSession(true);
+                toast('已恢复默认示例题库');
+            });
+        }
+
+        /**
+         * ============================================================================
+         * 错题本管理视图
          * ============================================================================
          */
         function renderWrongList() {
-            const list = state.bank.filter(q => state.wrongIds.has(q.id));
             const box = document.getElementById('wrong-items-list');
-            if (!list.length) {
-                box.innerHTML = `<div class="bg-[#F5F5F7] rounded-2xl p-12 text-center border-2 border-black text-xs text-black/60">暂无错题</div>`;
+            const wrongItems = state.bank.filter(q => state.wrongIds.has(q.id));
+            if (!wrongItems.length) {
+                box.innerHTML = `<div class="bg-[#F5F5F7] rounded-2xl p-10 border-2 border-black text-center text-xs text-black/60">暂无错题，在训练中答错或点击「入错题」即可自动收录</div>`;
                 return;
             }
-            box.innerHTML = list.map((q, i) => `
-                <div class="bg-[#F5F5F7] rounded-2xl p-5 border-2 border-black space-y-3 transition-all duration-200">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-black">#${i + 1}</span>
-                            <span class="px-2 py-0.5 rounded-[7px] bg-black text-white text-[11px]">${typeLabel(q.type)}</span>
+            box.innerHTML = wrongItems.map((q, i) => {
+                const m = getDeckMeta(q);
+                return `
+                    <div class="bg-[#F5F5F7] rounded-2xl p-4 sm:p-5 border-2 border-black space-y-2.5">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-xs text-black">${i + 1}.</span>
+                                <span class="px-2 py-0.5 rounded-[7px] bg-black text-white text-[11px]">${typeLabel(q.type)}</span>
+                                <span class="px-2 py-0.5 rounded-[7px] bg-white border border-black/30 text-[10px] text-black/75">${esc(m.company)} · ${esc(m.role)}</span>
+                            </div>
+                            <button onclick="removeWrongItem('${q.id}')" class="btn-white h-7 px-2.5 !rounded-[8px] text-[11px]">移出</button>
                         </div>
-                        <button onclick="removeWrongItem('${q.id}')" class="btn-white h-7 px-2.5 !rounded-[8px] text-[11px]">移出</button>
+                        <p class="text-sm text-black leading-snug whitespace-pre-line">${esc(q.stem)}</p>
+                        <div class="bg-white rounded-xl p-3 border border-black/25 space-y-1">
+                            <p class="text-xs text-[#10B981]">正确答案：${esc(q.answer)}</p>
+                            <p class="text-xs text-black/75 leading-relaxed">${esc(q.explanation || '暂无解析')}</p>
+                        </div>
                     </div>
-                    <p class="text-sm text-black leading-snug">${esc(q.stem)}</p>
-                    <div class="p-3.5 rounded-xl bg-white border-2 border-black space-y-1">
-                        <p class="text-xs text-black">答案：${esc(q.answer)}</p>
-                        <p class="text-xs text-black/80 leading-relaxed">${esc(q.explanation)}</p>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function removeWrongItem(id) {
-            triggerHaptic('error');
+            triggerHaptic('light');
             state.wrongIds.delete(id);
             persistWrong();
             renderWrongList();
-            toast('已移出');
+            toast('已移出错题本');
         }
 
         function clearMistakeBook() {
             if (!state.wrongIds.size) return;
-            confirmAction('清空错题本', '确定移除所有错题记录？', () => {
+            confirmAction('清空错题本', `确定清空全部 ${state.wrongIds.size} 道错题记录？`, () => {
                 triggerHaptic('error');
                 state.wrongIds.clear();
                 persistWrong();
                 renderWrongList();
-                toast('已清空');
+                toast('错题本已清空');
             });
         }
 
@@ -2662,6 +2042,32 @@ D. MySQL
             updatePillUI();
             switchView('train');
             startNewSession();
+        }
+
+        /**
+         * ============================================================================
+         * 内置精选默认示例题库
+         * ============================================================================
+         */
+        function getBuiltinBank() {
+            const rawBuiltin = [
+                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'single', stem: '在浏览器事件循环（Event Loop）中，下列哪一项属于微任务（Microtask）？', options: [{ key: 'A', text: 'setTimeout' }, { key: 'B', text: 'Promise.then' }, { key: 'C', text: 'setInterval' }, { key: 'D', text: 'requestAnimationFrame' }], answer: 'B', explanation: 'Promise.then / catch / finally、MutationObserver 与 queueMicrotask 属于微任务，会在当前宏任务执行完毕后立即清空执行。' },
+                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'single', stem: 'HTTP/2 相比 HTTP/1.1 解决队头阻塞的核心特性是？', options: [{ key: 'A', text: '长连接 Keep-Alive' }, { key: 'B', text: '多路复用（Multiplexing）' }, { key: 'C', text: '分块传输编码' }, { key: 'D', text: '明文头部压缩' }], answer: 'B', explanation: 'HTTP/2 引入二进制分帧层，允许在单个 TCP 连接上并行交错发送多个请求和响应帧，从而消除应用层 HTTP 队头阻塞。' },
+                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'multiple', stem: '下列哪些 CSS 属性会触发创建新的层叠上下文（Stacking Context）？', options: [{ key: 'A', text: 'opacity 小于 1' }, { key: 'B', text: 'transform 不为 none' }, { key: 'C', text: 'position: fixed' }, { key: 'D', text: 'display: block' }], answer: 'ABC', explanation: 'opacity < 1、transform 非 none、position: fixed / sticky 以及 z-index 不为 auto 的定位元素均会建立独立的层叠上下文。' },
+                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'judge', stem: 'JavaScript 中 const 声明的对象，其内部属性值依然可以被修改。', options: [{ key: 'A', text: '对' }, { key: 'B', text: '错' }], answer: '对', explanation: 'const 保证的是变量绑定的内存地址引用不可重新赋值，若引用指向对象或数组，其内部属性仍可修改。' },
+                { company: '通用技术', role: '后端开发', deckName: '计算机网络与系统', type: 'single', stem: 'TCP 三次握手中，客户端发送第三次 ACK 报文后进入什么状态？', options: [{ key: 'A', text: 'SYN_SENT' }, { key: 'B', text: 'SYN_RCVD' }, { key: 'C', text: 'ESTABLISHED' }, { key: 'D', text: 'TIME_WAIT' }], answer: 'C', explanation: '客户端收到服务端的 SYN+ACK 后发送最终确认 ACK，随即进入 ESTABLISHED 已连接状态。' },
+                { company: '通用技术', role: '后端开发', deckName: '计算机网络与系统', type: 'single', stem: 'MySQL InnoDB 引擎默认的事务隔离级别是？', options: [{ key: 'A', text: '读未提交（RU）' }, { key: 'B', text: '读已提交（RC）' }, { key: 'C', text: '可重复读（RR）' }, { key: 'D', text: '串行化（Serializable）' }], answer: 'C', explanation: 'InnoDB 默认隔离级别为 Repeatable Read（可重复读），通过 MVCC 与 Next-Key Lock 兼顾一致性与并发性能。' },
+                { company: '通用技术', role: '后端开发', deckName: '计算机网络与系统', type: 'judge', stem: 'Redis 单线程网络 IO 与命令执行模型下，不存在任何并发安全问题，因此无需关心分布式锁。', options: [{ key: 'A', text: '对' }, { key: 'B', text: '错' }], answer: '错', explanation: '虽然单条 Redis 命令是原子执行的，但多步“读取-判断-写入”复合业务操作仍存在竞态条件，需要 Lua 脚本或分布式锁保障原子性。' },
+                { company: '通用技术', role: '算法工程师', deckName: '数据结构与算法', type: 'single', stem: '快速排序在最坏情况下的时间复杂度为？', options: [{ key: 'A', text: 'O(n log n)' }, { key: 'B', text: 'O(n²)' }, { key: 'C', text: 'O(n)' }, { key: 'D', text: 'O(log n)' }], answer: 'B', explanation: '当每次选取的基准元素（Pivot）恰好为当前区间的最大或最小值时，快速排序退化为 O(n²)。' },
+                { company: '通用技术', role: '算法工程师', deckName: '数据结构与算法', type: 'multiple', stem: '以下哪些排序算法属于稳定排序算法？', options: [{ key: 'A', text: '归并排序' }, { key: 'B', text: '冒泡排序' }, { key: 'C', text: '堆排序' }, { key: 'D', text: '插入排序' }], answer: 'ABD', explanation: '冒泡、插入、归并和基数排序不会改变相等元素的相对顺序，属于稳定排序；堆排序与快速排序是不稳定排序。' },
+                { company: '通用技术', role: '产品经理', deckName: '产品设计与增长指标', type: 'single', stem: '在 A/B 测试中，用来衡量实验改动是否具有统计学显著性的核心指标通常是？', options: [{ key: 'A', text: 'DAU 峰值' }, { key: 'B', text: 'P 值（p-value）' }, { key: 'C', text: 'ROI 比率' }, { key: 'D', text: 'NPS 净推荐值' }], answer: 'B', explanation: '通常当 p-value < 0.05（置信度 95% 以上）时，认为实验组与对照组的指标差异具有统计显著性。' },
+                { company: '通用技术', role: '产品经理', deckName: '产品设计与增长指标', type: 'judge', stem: 'MVP（最小可行性产品）的核心目标是花费最少成本验证核心用户需求假设，而非追求功能大而全。', options: [{ key: 'A', text: '对' }, { key: 'B', text: '错' }], answer: '对', explanation: 'MVP 强调快速构建核心闭环并投放市场收集真实反馈，避免在未经验证的方向上过度研发。' },
+                { company: '通用技术', role: '数据分析', deckName: 'SQL与统计分析', type: 'single', stem: 'SQL 查询语句中，以下子句的逻辑执行顺序最先执行的是？', options: [{ key: 'A', text: 'SELECT' }, { key: 'B', text: 'WHERE' }, { key: 'C', text: 'FROM' }, { key: 'D', text: 'GROUP BY' }], answer: 'C', explanation: 'SQL 逻辑执行顺序为：FROM -> JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT。' }
+            ];
+            return rawBuiltin.map((item, idx) => ({
+                ...item,
+                id: `builtin_${idx + 1}`
+            }));
         }
 
         /**
