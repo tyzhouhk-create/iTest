@@ -470,6 +470,15 @@
                         </div>
                     </div>
 
+                    <!-- 空题库引导卡片（无例题时显示） -->
+                    <div id="empty-train-card" class="hidden apple-fade bg-[#F5F5F7] rounded-2xl p-8 sm:p-12 border-2 border-black text-center space-y-4">
+                        <h2 class="text-lg sm:text-xl text-black">当前暂无题库</h2>
+                        <p class="text-xs text-black/65">上传一次题库后将永久保存在云端与本地，无需重复上传</p>
+                        <div class="pt-1">
+                            <button onclick="switchView('bank')" class="btn-black h-10 px-6 text-xs">前往上传题库</button>
+                        </div>
+                    </div>
+
                     <!-- 结算成绩简报卡 -->
                     <div id="summary-card" class="hidden apple-fade bg-[#F5F5F7] rounded-2xl p-6 sm:p-10 border-2 border-black text-center space-y-6">
                         <div class="space-y-1">
@@ -507,8 +516,7 @@
                 <div class="flex items-center justify-between gap-2">
                     <h2 class="text-base text-black">导入题库</h2>
                     <div class="flex items-center gap-2">
-                        <button onclick="fillDemoText()" class="btn-white h-8 px-3 text-xs">示例</button>
-                        <button onclick="restoreDemoBank()" class="btn-white h-8 px-3 text-xs">重置</button>
+                        <button onclick="fillDemoText()" class="btn-white h-8 px-3 text-xs">格式示例</button>
                     </div>
                 </div>
 
@@ -576,7 +584,7 @@
                 <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white border-[1.5px] border-black text-xs">
                     <div class="flex items-center gap-2">
                         <span id="cloud-dot" class="w-2.5 h-2.5 rounded-full bg-black/30 inline-block"></span>
-                        <span id="cloud-status-text" class="text-black">本地模式（填入 Supabase 密钥即可开启全网共享）</span>
+                        <span id="cloud-status-text" class="text-black">本地模式（填入 Google Firebase 或 Supabase 配置即可开启全网共享）</span>
                     </div>
                     <button onclick="syncFromCloud(true)" class="btn-white h-7 px-2.5 !rounded-[7px] text-[11px]">同步云端</button>
                 </div>
@@ -693,17 +701,30 @@
 
         /**
          * ============================================================================
-         * 云端共享配置与同步引擎 (Supabase REST API - 全网免登录自由共享)
+         * 云端共享配置与同步引擎 (优先支持 Google Firebase Firestore，兼顾 Supabase)
          * ============================================================================
          */
+        const FIREBASE_CONFIG = {
+            apiKey: 'AIzaSyAiTycaJYwBADV8zr29yYVUXWIwfDhKqJA',
+            projectId: 'itest-e1e0c'
+        };
+
         const SUPABASE_CONFIG = {
             url: 'https://xzhtasqkqmysiwxtkdjm.supabase.co',
-            anonKey: 'sb_publishable_uhlXUwSgSUt9D9Dk5Ge4Fw_9ikezN5G'
+            anonKey: ''
         };
         const EMBEDDED_SNAPSHOT = null;
 
-        function isCloudEnabled() {
+        function isFirebaseEnabled() {
+            return Boolean(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId);
+        }
+
+        function isSupabaseEnabled() {
             return Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.url.startsWith('http') && SUPABASE_CONFIG.anonKey);
+        }
+
+        function isCloudEnabled() {
+            return isFirebaseEnabled() || isSupabaseEnabled();
         }
 
         function setCloudStatus(text, connected = false) {
@@ -713,48 +734,98 @@
             if (label) label.textContent = text;
         }
 
+        function fromFirestoreFields(fields = {}) {
+            const str = k => fields[k]?.stringValue ?? '';
+            let opts = [];
+            try {
+                opts = JSON.parse(fields.options?.stringValue || '[]');
+            } catch (e) {}
+            return {
+                id: str('id'),
+                company: str('company'),
+                role: str('role'),
+                deckName: str('deck_name'),
+                type: str('type'),
+                stem: str('stem'),
+                options: opts,
+                answer: str('answer'),
+                explanation: str('explanation')
+            };
+        }
+
+        function toFirestoreFields(q) {
+            const m = getDeckMeta(q);
+            return {
+                id: { stringValue: String(q.id) },
+                company: { stringValue: String(m.company) },
+                role: { stringValue: String(m.role) },
+                deck_name: { stringValue: String(m.deckName) },
+                type: { stringValue: String(q.type) },
+                stem: { stringValue: String(q.stem) },
+                options: { stringValue: JSON.stringify(q.options || []) },
+                answer: { stringValue: String(q.answer) },
+                explanation: { stringValue: String(q.explanation || '') }
+            };
+        }
+
         async function syncFromCloud(manual = false) {
             if (!isCloudEnabled()) {
-                setCloudStatus('本地模式（填入 Supabase 密钥即可开启全网共享）', false);
-                if (manual) toast('请先在代码中配置 SUPABASE_CONFIG');
+                setCloudStatus('本地模式（填入 Google Firebase 或 Supabase 配置即可开启全网共享）', false);
+                if (manual) toast('请先在代码中配置 FIREBASE_CONFIG 或 SUPABASE_CONFIG');
                 return;
             }
             try {
-                const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions?select=*&order=created_at.desc`;
-                const res = await fetch(endpoint, {
-                    headers: {
-                        'apikey': SUPABASE_CONFIG.anonKey,
-                        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
-                    }
-                });
-                if (!res.ok) throw new Error('Cloud fetch failed');
-                const rows = await res.json();
-                if (Array.isArray(rows) && rows.length > 0) {
-                    const cloudItems = rows.map((r, i) => normalizeQ({
-                        id: r.id,
-                        company: r.company,
-                        role: r.role,
-                        deckName: r.deck_name,
-                        type: r.type,
-                        stem: r.stem,
-                        options: r.options,
-                        answer: r.answer,
-                        explanation: r.explanation
-                    }, i));
-                    const map = new Map();
-                    state.bank.forEach(q => map.set(q.id, q));
-                    cloudItems.forEach(q => { if (q) map.set(q.id, q); });
-                    state.bank = [...map.values()];
+                if (isFirebaseEnabled()) {
+                    const endpoint = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(FIREBASE_CONFIG.projectId)}/databases/(default)/documents/itest_questions?pageSize=1000&key=${encodeURIComponent(FIREBASE_CONFIG.apiKey)}`;
+                    const res = await fetch(endpoint);
+                    if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
+                    const data = await res.json();
+                    const docs = Array.isArray(data.documents) ? data.documents : [];
+                    const cloudItems = docs.map((doc, i) => {
+                        const item = fromFirestoreFields(doc.fields || {});
+                        if (!item.id && doc.name) item.id = doc.name.split('/').pop();
+                        return normalizeQ(item, i);
+                    }).filter(Boolean);
+                    state.bank = cloudItems;
                     persistBank();
                     if (state.view === 'bank') renderBankList();
+                    if (state.view === 'train') startNewSession(true);
+                    setCloudStatus(`已连接 Google Firebase 云端（共 ${state.bank.length} 题）`, true);
+                } else if (isSupabaseEnabled()) {
+                    const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions?select=*&order=created_at.desc`;
+                    const res = await fetch(endpoint, {
+                        headers: {
+                            'apikey': SUPABASE_CONFIG.anonKey,
+                            'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
+                        }
+                    });
+                    if (!res.ok) throw new Error('Cloud fetch failed');
+                    const rows = await res.json();
+                    if (Array.isArray(rows)) {
+                        const cloudItems = rows.map((r, i) => normalizeQ({
+                            id: r.id,
+                            company: r.company,
+                            role: r.role,
+                            deckName: r.deck_name,
+                            type: r.type,
+                            stem: r.stem,
+                            options: r.options,
+                            answer: r.answer,
+                            explanation: r.explanation
+                        }, i)).filter(Boolean);
+                        state.bank = cloudItems;
+                        persistBank();
+                        if (state.view === 'bank') renderBankList();
+                        if (state.view === 'train') startNewSession(true);
+                    }
+                    setCloudStatus(`已连接 Supabase 云端（共 ${state.bank.length} 题）`, true);
                 }
-                setCloudStatus(`已连接全网共享云端（共 ${state.bank.length} 题）`, true);
                 if (manual) {
                     triggerHaptic('success');
                     toast('云端题库已同步');
                 }
             } catch (e) {
-                setCloudStatus('云端连接失败，当前使用本地题库', false);
+                setCloudStatus('云端连接失败，请检查规则或配置', false);
                 if (manual) {
                     triggerHaptic('error');
                     toast('云端同步失败');
@@ -765,6 +836,22 @@
         async function pushQuestionsToCloud(questions) {
             if (!isCloudEnabled() || !questions.length) return;
             try {
+                if (isFirebaseEnabled()) {
+                    const base = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(FIREBASE_CONFIG.projectId)}/databases/(default)/documents/itest_questions`;
+                    await Promise.all(questions.map(async q => {
+                        const url = `${base}/${encodeURIComponent(q.id)}?key=${encodeURIComponent(FIREBASE_CONFIG.apiKey)}`;
+                        const res = await fetch(url, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ fields: toFirestoreFields(q) })
+                        });
+                        if (!res.ok) throw new Error(`Firebase write ${res.status}`);
+                    }));
+                    setCloudStatus(`已连接 Google Firebase 云端（共 ${state.bank.length} 题）`, true);
+                    toast('已同步至你的 Google 云端');
+                    return;
+                }
+
                 const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions`;
                 const payload = questions.map(q => {
                     const m = getDeckMeta(q);
@@ -791,16 +878,35 @@
                     body: JSON.stringify(payload)
                 });
                 if (res.ok) {
-                    setCloudStatus(`已连接全网共享云端（共 ${state.bank.length} 题）`, true);
+                    setCloudStatus(`已连接 Supabase 云端（共 ${state.bank.length} 题）`, true);
+                    toast('已同步至云端数据库');
+                } else {
+                    const errText = await res.text();
+                    console.error('Supabase insert error:', res.status, errText);
+                    setCloudStatus(`云端写入被拒 (${res.status})：请检查表名与RLS权限`, false);
+                    toast(`云端写入失败 (${res.status})，请检查RLS开关或字段名`);
                 }
             } catch (e) {
                 console.warn('Cloud push error:', e);
+                setCloudStatus('云端写入失败，请检查安全规则或配置', false);
+                toast('云端写入失败，请检查规则');
             }
         }
 
         async function deleteCloudQuestionsByIds(ids) {
             if (!isCloudEnabled() || !ids.length) return;
             try {
+                if (isFirebaseEnabled()) {
+                    const base = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(FIREBASE_CONFIG.projectId)}/databases/(default)/documents/itest_questions`;
+                    await Promise.all(ids.map(id =>
+                        fetch(`${base}/${encodeURIComponent(id)}?key=${encodeURIComponent(FIREBASE_CONFIG.apiKey)}`, {
+                            method: 'DELETE'
+                        })
+                    ));
+                    setCloudStatus(`已连接 Google Firebase 云端（共 ${state.bank.length} 题）`, true);
+                    return;
+                }
+
                 const encoded = ids.map(id => `"${String(id).replace(/"/g, '\\"')}"`).join(',');
                 const endpoint = `${SUPABASE_CONFIG.url.replace(/\/$/, '')}/rest/v1/itest_questions?id=in.(${encodeURIComponent(encoded)})`;
                 await fetch(endpoint, {
@@ -810,7 +916,7 @@
                         'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`
                     }
                 });
-                setCloudStatus(`已连接全网共享云端（共 ${state.bank.length} 题）`, true);
+                setCloudStatus(`已连接 Supabase 云端（共 ${state.bank.length} 题）`, true);
             } catch (e) {
                 console.warn('Cloud delete error:', e);
             }
@@ -829,15 +935,14 @@
                 persistWrong();
             } else {
                 try {
-                    const savedBank = JSON.parse(localStorage.getItem(KEY_BANK) || 'null');
-                    if (Array.isArray(savedBank) && savedBank.length > 0) {
+                    const savedBank = JSON.parse(localStorage.getItem(KEY_BANK) || '[]');
+                    if (Array.isArray(savedBank)) {
                         state.bank = savedBank.map((q, i) => normalizeQ(q, i)).filter(Boolean);
                     } else {
-                        state.bank = getBuiltinBank();
-                        persistBank();
+                        state.bank = [];
                     }
                 } catch (e) {
-                    state.bank = getBuiltinBank();
+                    state.bank = [];
                 }
 
                 try {
@@ -1031,9 +1136,12 @@
             }
 
             if (!pool.length) {
-                state.bank = getBuiltinBank();
-                persistBank();
-                pool = [...state.bank];
+                state.session.questions = [];
+                state.session.index = 0;
+                state.session.records = {};
+                renderQuestion(false);
+                renderPalette(false);
+                return;
             }
 
             // Fisher-Yates 洗牌随机抽取 10-20 题
@@ -1146,14 +1254,21 @@
 
         function renderQuestion(animateCard = false) {
             const total = state.session.questions.length;
-            if (!total) return;
+            const card = document.getElementById('quiz-card');
+            const emptyCard = document.getElementById('empty-train-card');
+            if (!total) {
+                if (card) card.classList.add('hidden');
+                if (emptyCard) emptyCard.classList.remove('hidden');
+                return;
+            }
+            if (card) card.classList.remove('hidden');
+            if (emptyCard) emptyCard.classList.add('hidden');
 
             const idx = state.session.index;
             const q = state.session.questions[idx];
             const rec = state.session.records[idx];
             const meta = getDeckMeta(q);
 
-            const card = document.getElementById('quiz-card');
             if (animateCard && card) {
                 card.classList.remove('question-slide');
                 void card.offsetWidth;
@@ -1763,7 +1878,7 @@
             if (totalLabel) totalLabel.textContent = `共 ${state.bank.length} 题`;
 
             if (!state.bank.length) {
-                deckBox.innerHTML = `<div class="bg-white rounded-xl p-6 border border-black/20 text-center text-xs text-black/60">题库为空，请在上方上传或点击「重置」恢复示例</div>`;
+                deckBox.innerHTML = `<div class="bg-white rounded-xl p-6 border border-black/20 text-center text-xs text-black/60">当前暂无题库，请在上方上传文件或粘贴题目</div>`;
                 itemBox.innerHTML = '';
                 return;
             }
@@ -1968,14 +2083,10 @@ D. Undefined
         }
 
         function restoreDemoBank() {
-            confirmAction('重置内置示例', '恢复默认内置示例题库并保留当前云端连接？', () => {
-                triggerHaptic('success');
-                state.bank = getBuiltinBank();
-                persistBank();
-                renderBankList();
-                startNewSession(true);
-                toast('已恢复默认示例题库');
-            });
+            state.bank = [];
+            persistBank();
+            renderBankList();
+            startNewSession(true);
         }
 
         /**
@@ -2046,28 +2157,11 @@ D. Undefined
 
         /**
          * ============================================================================
-         * 内置精选默认示例题库
+         * 无内置例题（保持初始纯净空题库）
          * ============================================================================
          */
         function getBuiltinBank() {
-            const rawBuiltin = [
-                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'single', stem: '在浏览器事件循环（Event Loop）中，下列哪一项属于微任务（Microtask）？', options: [{ key: 'A', text: 'setTimeout' }, { key: 'B', text: 'Promise.then' }, { key: 'C', text: 'setInterval' }, { key: 'D', text: 'requestAnimationFrame' }], answer: 'B', explanation: 'Promise.then / catch / finally、MutationObserver 与 queueMicrotask 属于微任务，会在当前宏任务执行完毕后立即清空执行。' },
-                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'single', stem: 'HTTP/2 相比 HTTP/1.1 解决队头阻塞的核心特性是？', options: [{ key: 'A', text: '长连接 Keep-Alive' }, { key: 'B', text: '多路复用（Multiplexing）' }, { key: 'C', text: '分块传输编码' }, { key: 'D', text: '明文头部压缩' }], answer: 'B', explanation: 'HTTP/2 引入二进制分帧层，允许在单个 TCP 连接上并行交错发送多个请求和响应帧，从而消除应用层 HTTP 队头阻塞。' },
-                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'multiple', stem: '下列哪些 CSS 属性会触发创建新的层叠上下文（Stacking Context）？', options: [{ key: 'A', text: 'opacity 小于 1' }, { key: 'B', text: 'transform 不为 none' }, { key: 'C', text: 'position: fixed' }, { key: 'D', text: 'display: block' }], answer: 'ABC', explanation: 'opacity < 1、transform 非 none、position: fixed / sticky 以及 z-index 不为 auto 的定位元素均会建立独立的层叠上下文。' },
-                { company: '通用技术', role: '前端开发', deckName: 'Web核心基础精选', type: 'judge', stem: 'JavaScript 中 const 声明的对象，其内部属性值依然可以被修改。', options: [{ key: 'A', text: '对' }, { key: 'B', text: '错' }], answer: '对', explanation: 'const 保证的是变量绑定的内存地址引用不可重新赋值，若引用指向对象或数组，其内部属性仍可修改。' },
-                { company: '通用技术', role: '后端开发', deckName: '计算机网络与系统', type: 'single', stem: 'TCP 三次握手中，客户端发送第三次 ACK 报文后进入什么状态？', options: [{ key: 'A', text: 'SYN_SENT' }, { key: 'B', text: 'SYN_RCVD' }, { key: 'C', text: 'ESTABLISHED' }, { key: 'D', text: 'TIME_WAIT' }], answer: 'C', explanation: '客户端收到服务端的 SYN+ACK 后发送最终确认 ACK，随即进入 ESTABLISHED 已连接状态。' },
-                { company: '通用技术', role: '后端开发', deckName: '计算机网络与系统', type: 'single', stem: 'MySQL InnoDB 引擎默认的事务隔离级别是？', options: [{ key: 'A', text: '读未提交（RU）' }, { key: 'B', text: '读已提交（RC）' }, { key: 'C', text: '可重复读（RR）' }, { key: 'D', text: '串行化（Serializable）' }], answer: 'C', explanation: 'InnoDB 默认隔离级别为 Repeatable Read（可重复读），通过 MVCC 与 Next-Key Lock 兼顾一致性与并发性能。' },
-                { company: '通用技术', role: '后端开发', deckName: '计算机网络与系统', type: 'judge', stem: 'Redis 单线程网络 IO 与命令执行模型下，不存在任何并发安全问题，因此无需关心分布式锁。', options: [{ key: 'A', text: '对' }, { key: 'B', text: '错' }], answer: '错', explanation: '虽然单条 Redis 命令是原子执行的，但多步“读取-判断-写入”复合业务操作仍存在竞态条件，需要 Lua 脚本或分布式锁保障原子性。' },
-                { company: '通用技术', role: '算法工程师', deckName: '数据结构与算法', type: 'single', stem: '快速排序在最坏情况下的时间复杂度为？', options: [{ key: 'A', text: 'O(n log n)' }, { key: 'B', text: 'O(n²)' }, { key: 'C', text: 'O(n)' }, { key: 'D', text: 'O(log n)' }], answer: 'B', explanation: '当每次选取的基准元素（Pivot）恰好为当前区间的最大或最小值时，快速排序退化为 O(n²)。' },
-                { company: '通用技术', role: '算法工程师', deckName: '数据结构与算法', type: 'multiple', stem: '以下哪些排序算法属于稳定排序算法？', options: [{ key: 'A', text: '归并排序' }, { key: 'B', text: '冒泡排序' }, { key: 'C', text: '堆排序' }, { key: 'D', text: '插入排序' }], answer: 'ABD', explanation: '冒泡、插入、归并和基数排序不会改变相等元素的相对顺序，属于稳定排序；堆排序与快速排序是不稳定排序。' },
-                { company: '通用技术', role: '产品经理', deckName: '产品设计与增长指标', type: 'single', stem: '在 A/B 测试中，用来衡量实验改动是否具有统计学显著性的核心指标通常是？', options: [{ key: 'A', text: 'DAU 峰值' }, { key: 'B', text: 'P 值（p-value）' }, { key: 'C', text: 'ROI 比率' }, { key: 'D', text: 'NPS 净推荐值' }], answer: 'B', explanation: '通常当 p-value < 0.05（置信度 95% 以上）时，认为实验组与对照组的指标差异具有统计显著性。' },
-                { company: '通用技术', role: '产品经理', deckName: '产品设计与增长指标', type: 'judge', stem: 'MVP（最小可行性产品）的核心目标是花费最少成本验证核心用户需求假设，而非追求功能大而全。', options: [{ key: 'A', text: '对' }, { key: 'B', text: '错' }], answer: '对', explanation: 'MVP 强调快速构建核心闭环并投放市场收集真实反馈，避免在未经验证的方向上过度研发。' },
-                { company: '通用技术', role: '数据分析', deckName: 'SQL与统计分析', type: 'single', stem: 'SQL 查询语句中，以下子句的逻辑执行顺序最先执行的是？', options: [{ key: 'A', text: 'SELECT' }, { key: 'B', text: 'WHERE' }, { key: 'C', text: 'FROM' }, { key: 'D', text: 'GROUP BY' }], answer: 'C', explanation: 'SQL 逻辑执行顺序为：FROM -> JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY -> LIMIT。' }
-            ];
-            return rawBuiltin.map((item, idx) => ({
-                ...item,
-                id: `builtin_${idx + 1}`
-            }));
+            return [];
         }
 
         /**
